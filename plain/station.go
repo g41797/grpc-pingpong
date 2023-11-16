@@ -46,11 +46,6 @@ type StorageOpt struct{
 	StorageType StorageType
 }
 
-// func (so *StorageOpt) Set(st int32) bool {
-// 	if (st < 0) || (st > 1) {return false}
-// 	return true
-// }
-
 type PartitionOpt struct {
 	WasSetFlag
 	Number			int32
