@@ -1,4 +1,8 @@
 
+Protobuf and Go: Handling Oneof Field type
+https://software-factotum.medium.com/protobuf-and-go-handling-oneof-field-type-172ca780ec47
+
+
 Build gRPC Server API & Client with Golang and MongoDB
 https://github.com/wpcodevo/golang-mongodb-api
 https://codevoweb.com/api-golang-mongodb-gin-gonic-project-setup/
