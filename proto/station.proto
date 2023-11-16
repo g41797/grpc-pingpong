@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "githib.com/g41797/grpcadapter/pb";
+
+message Station {
+    string name = 1;
+}
+
+message MaxMessageAgeSecondsRet {
+    int32 seconds = 1;
+}
+
+message MessagesRet {
+    int32 messages = 1;
+}
+
+message BytesRet {
+    int32 bytes = 1;
+}
+
+message AckBasedRet {
+    bool ackBased = 1;
+}
+
+
+message RetentionOpt {
+    oneof retentions {
+        MaxMessageAgeSecondsRet mmasret = 1;
+        MessagesRet msgret = 2;
+        BytesRet bret = 3;
+        AckBasedRet abret = 4;
+    }
+}
+
+message StorageOpt {
+    enum StorageType {
+        Disk = 0;
+        Memory = 1;
+    }
+    StorageType storageType = 1;
+}
+
+message PartitionOpt {
+    int32 number = 1;
+}
+
+message StationOpions {
+    optional PartitionOpt part = 1;
+    optional StorageOpt storage = 2;
+    optional RetentionOpt retention = 3;
+}
+
+message CreateStationRequest {
+    Station station = 1;
+    optional StationOpions options = 2;
+}
+
+message DestroyStationRequest {
+    Station station = 1;
+}
+

@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "githib.com/g41797/grpcadapter/pb";
+
+import "status.proto";
+import "station.proto";
+import "consumer.proto";
+import "stop.proto";
+import "msg.proto";
+
+message ConsumeRequest {
+	Station station = 1;
+	Consumer consumer = 2;
+	optional ConsumingOpions options = 3;
+}
+
+message ConsumeMessages {
+	oneof data {
+		ConsumeRequest start = 1;
+		Status error = 2;
+		Stop stop = 3;
+	}
+}
+
+message ConsumeResponse {
+	oneof data {
+		Msg msg = 1;
+		Status error = 2;
+		Stop stop = 3;
+	};
+}
+
+service ConsumerService {
+	rpc Consume(stream ConsumeMessages) returns (stream ConsumeResponse) {}
+}

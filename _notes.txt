@@ -1,0 +1,64 @@
+
+Build gRPC Server API & Client with Golang and MongoDB
+https://github.com/wpcodevo/golang-mongodb-api
+https://codevoweb.com/api-golang-mongodb-gin-gonic-project-setup/
+
+
+Build Golang gRPC Server and Client: Access & Refresh Tokens
+https://codevoweb.com/golang-grpc-server-and-client-access-refresh-tokens/
+
+
+Install grpc staff
+sudo dnf install golang-github-protobuf-devel
+
+Fix protoc-gen-go-grpc problem
+https://stackoverflow.com/questions/60578892/protoc-gen-go-grpc-program-not-found-or-is-not-executable
+https://askgolang.com/how-to-fix-protoc-gen-go-grpc-program-not-found-or-is-not-executable/
+
+
+The complete gRPC course
+https://dev.to/techschoolguru/series/7311
+https://github.com/techschool/pcbook-go
+
+
+awesome-grpc
+https://github.com/grpc-ecosystem/awesome-grpc
+
+goKIT
+https://pkg.go.dev/github.com/shijuvar/gokit
+
+gRPC-Go-for-Professional
+https://github.com/PacktPublishing/gRPC-Go-for-Professionals
+
+dapr Proto
+https://github.com/dapr/dapr/tree/master/dapr#readme
+
+ProtoActor
+https://github.com/asynkron/protoactor-go/tree/dev/remote
+
+ResoourceOriented grpc
+https://youtu.be/9dBMPrwtGAQ?t=796
+
+Go SDK for implementing resource-oriented gRPC APIs
+https://github.com/einride/aip-go/tree/master
+
+Resource-oriented design
+https://google.aip.dev/121
+
+Implement client-server session
+https://groups.google.com/g/grpc-io/c/ODXWewW32cg
+
+RPC life cycle
+https://grpc.io/docs/what-is-grpc/core-concepts/
+
+gRPC Long-lived Streaming
+https://dev.bitolog.com/grpc-long-lived-streaming/
+https://github.com/omri86/longlived-grpc
+
+nRPC is like gRPC, but over NATS
+https://github.com/nats-rpc/nrpc
+
+Generate .proto files from Go source code
+ https://github.com/src-d/proteus
+ https://github.com/anjmao/go2proto
+
