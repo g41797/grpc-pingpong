@@ -1,7 +1,6 @@
 package plain
 
 type Station struct {
-	WasSetFlag
 	Name string
 }
 
@@ -13,27 +12,22 @@ const (
 )
 
 type MaxMessageAgeSecondsRet struct {
-	WasSetFlag
-	Seconds int32
+	Seconds *int32
 }
 
 type MessagesRet struct {
-	WasSetFlag
-	Messages int32
+	Messages *int32
 }
 
 type BytesRet struct {
-	WasSetFlag
-	Bytes int32
+	Bytes *int32
 }
 
 type AckBasedRet struct {
-	WasSetFlag
-	AckBased bool
+	AckBased *bool
 }
 
 type RetentionOpt struct {
-	WasSetFlag
 	// *MaxMessageAgeSecondsRet
 	// *MessagesRet
 	// *BytesRet
@@ -42,29 +36,24 @@ type RetentionOpt struct {
 }
 
 type StorageOpt struct {
-	WasSetFlag
-	StorageType StorageType
+	StorageType *StorageType
 }
 
 type PartitionOpt struct {
-	WasSetFlag
-	Number int32
+	Number *int32
 }
 
 type StationOpions struct {
-	WasSetFlag
 	PartitionOpt *PartitionOpt
 	StorageOpt   *StorageOpt
 	RetentionOpt *RetentionOpt
 }
 
 type CreateStationRequest struct {
-	WasSetFlag
-	Station       Station
-	StationOpions *StationOpions
+	Station *Station
+	Opions  *StationOpions
 }
 
 type DestroyStationRequest struct {
-	WasSetFlag
-	Station Station
+	Station *Station
 }
