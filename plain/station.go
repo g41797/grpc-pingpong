@@ -12,7 +12,7 @@ const (
 	Memory StorageType = 1
 )
 
-type  MaxMessageAgeSecondsRet struct {
+type MaxMessageAgeSecondsRet struct {
 	WasSetFlag
 	Seconds int32
 }
@@ -27,12 +27,12 @@ type BytesRet struct {
 	Bytes int32
 }
 
-type AckBasedRet {
+type AckBasedRet struct {
 	WasSetFlag
 	AckBased bool
 }
 
-type RetentionOpt {
+type RetentionOpt struct {
 	WasSetFlag
 	// *MaxMessageAgeSecondsRet
 	// *MessagesRet
@@ -41,30 +41,30 @@ type RetentionOpt {
 	Option any
 }
 
-type StorageOpt struct{
+type StorageOpt struct {
 	WasSetFlag
 	StorageType StorageType
 }
 
 type PartitionOpt struct {
 	WasSetFlag
-	Number			int32
+	Number int32
 }
 
-type StationOpions  struct {
+type StationOpions struct {
 	WasSetFlag
-	PartitionOpt	*PartitionOpt
-    StorageOpt		*StorageOpt
-    RetentionOpt	*RetentionOpt
+	PartitionOpt *PartitionOpt
+	StorageOpt   *StorageOpt
+	RetentionOpt *RetentionOpt
 }
 
 type CreateStationRequest struct {
 	WasSetFlag
-	Station 		Station
-    StationOpions	*StationOpions
+	Station       Station
+	StationOpions *StationOpions
 }
 
 type DestroyStationRequest struct {
 	WasSetFlag
-	Station 		Station
+	Station Station
 }

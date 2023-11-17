@@ -1,6 +1,6 @@
 module githib.com/g41797/grpcadapter
 
-go 1.20
+go 1.21.1
 
 require (
 	google.golang.org/grpc v1.59.0

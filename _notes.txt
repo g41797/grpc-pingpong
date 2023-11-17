@@ -1,4 +1,20 @@
 
+Go blog
+https://www.inanzzz.com/index.php/home
+
+Unit testing Golang gRPC client and server application with bufconn package
+https://www.inanzzz.com/index.php/post/w9qr/unit-testing-golang-grpc-client-and-server-application-with-bufconn-package
+
+
+Using gRPC with Golang
+https://speedscale.com/blog/using-grpc-with-golang/#elementor-toc__heading-anchor-2
+https://github.com/xNok/go-grpc-demo
+
+
+Creating gRPC interceptors
+https://dev.to/davidsbond/golang-creating-grpc-interceptors-5el5
+
+
 Protobuf and Go: Handling Oneof Field type
 https://software-factotum.medium.com/protobuf-and-go-handling-oneof-field-type-172ca780ec47
 

@@ -1,7 +1,6 @@
-
 package plain
 
-type WasSetFlag {
+type WasSetFlag struct {
 	wasset bool
 }
 
@@ -12,6 +11,8 @@ func (ws *WasSetFlag) SetFlag() {
 }
 
 func (ws *WasSetFlag) IsSet() bool {
-	if ws == nil {return false}
+	if ws == nil {
+		return false
+	}
 	return ws.wasset
 }
