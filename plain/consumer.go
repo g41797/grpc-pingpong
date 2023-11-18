@@ -30,3 +30,10 @@ type ConsumeMessages struct {
 	//	*Stop
 	Data any
 }
+
+type ConsumeResponse struct {
+	//	*Msg
+	//	*Error
+	//	*Stop
+	Data any
+}
