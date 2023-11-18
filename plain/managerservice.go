@@ -7,5 +7,6 @@ type ManagerServiceClient interface {
 }
 
 type ManagerServiceServer interface {
+	Service
 	Manage(ctx context.Context, req *ManageRequest) (*Status, error)
 }
