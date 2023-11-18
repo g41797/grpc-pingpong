@@ -25,15 +25,15 @@ type ConsumeRequest struct {
 }
 
 type ConsumeMessages struct {
-	//	*Start
-	//	*Error
+	//	*ConsumeRequest
+	//	*Status
 	//	*Stop
 	Data any
 }
 
 type ConsumeResponse struct {
 	//	*Msg
-	//	*Error
+	//	*Status
 	//	*Stop
 	Data any
 }

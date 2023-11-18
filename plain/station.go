@@ -32,7 +32,7 @@ type RetentionOpt struct {
 	// *MessagesRet
 	// *BytesRet
 	// *AckBasedRet
-	Option any
+	Data any
 }
 
 type StorageOpt struct {
