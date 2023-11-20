@@ -8,14 +8,13 @@ import (
 
 	"githib.com/g41797/grpcadapter/pb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
 )
 
 func TestManagerService_CreateStation(t *testing.T) {
 
-	ctx := context.Background()
-
-	conn, err := grpc.DialContext(ctx, "", grpc.WithInsecure(), grpc.WithContextDialer(dialer()))
+	conn, err := startServerConnectClient()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,19 +22,22 @@ func TestManagerService_CreateStation(t *testing.T) {
 
 	client := pb.NewManagerServiceClient(conn)
 
-	csr := pb.CreateStationRequest{Station: &pb.Station{Name: "FirstStation"}}
-	mreq := pb.ManageRequest{}
-	mreq.Data = &pb.ManageRequest_Createstation{Createstation: &csr}
+	for i := 0; i < 10; i++ {
 
-	ctx = context.Background()
+		mreq := pb.ManageRequest{
+			Data: &pb.ManageRequest_Createstation{
+				Createstation: &pb.CreateStationRequest{Station: &pb.Station{Name: "FirstStation"}}}}
 
-	status, err := client.Manage(ctx, &mreq)
-	if err != nil {
-		t.Fatal(err)
-	}
+		ctx := context.Background()
 
-	if len(status.GetText()) > 0 {
-		t.Error(status.GetText())
+		status, err := client.Manage(ctx, &mreq)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if len(status.GetText()) > 0 {
+			t.Error(status.GetText())
+		}
 	}
 }
 
@@ -53,4 +55,15 @@ func dialer() func(context.Context, string) (net.Conn, error) {
 	return func(context.Context, string) (net.Conn, error) {
 		return listener.Dial()
 	}
+}
+
+func startServerConnectClient() (conn *grpc.ClientConn, err error) {
+	ctx := context.Background()
+
+	conn, err = grpc.DialContext(ctx, "",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithContextDialer(dialer()),
+		grpc.WithBlock())
+
+	return conn, err
 }
