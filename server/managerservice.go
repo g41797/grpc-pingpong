@@ -24,13 +24,13 @@ type ManagerService struct {
 	pb.UnimplementedManagerServiceServer
 }
 
-func (srv *ManagerService) Manage(ctx context.Context, mr *pb.ManageRequest) (*Status, error) {
+func (srv *ManagerService) Manage(ctx context.Context, mr *pb.ManageRequest) (*pb.Status, error) {
 
 	status := pb.Status{}
 
 	if err := srv.connect(); err != nil {
 		*status.Text = err.Error()
-		return status
+		return &status, err
 	}
 
 	defer srv.disconnect()
@@ -39,8 +39,8 @@ func (srv *ManagerService) Manage(ctx context.Context, mr *pb.ManageRequest) (*S
 		if err := srv.createStation(req); err != nil {
 			*status.Text = err.Error()
 		}
-		return status
+		return &status, nil
 	}
 
-	return pb.Status{}
+	return &pb.Status{}, nil
 }

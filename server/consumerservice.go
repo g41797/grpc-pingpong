@@ -53,7 +53,7 @@ func (srv *ConsumerService) Consume(c pb.ConsumerService_ConsumeServer) error {
 		if err != nil {
 			status := pb.Status{}
 			*status.Text = err.Error()
-			resp.Data = &pb.ConsumeResponse_Error{&status}
+			resp.Data = &pb.ConsumeResponse_Error{Error: &status}
 			c.Send(&resp)
 			return nil
 		}
@@ -62,14 +62,14 @@ func (srv *ConsumerService) Consume(c pb.ConsumerService_ConsumeServer) error {
 			if err := srv.startConsume(start); err != nil {
 				status := pb.Status{}
 				*status.Text = err.Error()
-				resp.Data = &pb.ConsumeResponse_Error{&status}
+				resp.Data = &pb.ConsumeResponse_Error{Error: &status}
 				c.Send(&resp)
 				return nil
 			}
 			continue
 		}
 
-		resp.Data = &pb.ConsumeResponse_Error{&pb.Status{}}
+		resp.Data = &pb.ConsumeResponse_Error{Error: &pb.Status{}}
 		c.Send(&resp)
 		break
 	}
