@@ -14,7 +14,7 @@ import (
 
 func TestManagerService_CreateStation(t *testing.T) {
 
-	conn, err := startServerConnectClient()
+	conn, err := startServerConnectClient(createManagerServiceServer)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,10 +41,10 @@ func TestManagerService_CreateStation(t *testing.T) {
 	}
 }
 
-func dialer() func(context.Context, string) (net.Conn, error) {
+func dialer(cs func() *grpc.Server) func(context.Context, string) (net.Conn, error) {
+	server := cs()
+
 	listener := bufconn.Listen(1024 * 1024)
-	server := grpc.NewServer()
-	pb.RegisterManagerServiceServer(server, &ManagerService{})
 
 	go func() {
 		if err := server.Serve(listener); err != nil {
@@ -57,13 +57,19 @@ func dialer() func(context.Context, string) (net.Conn, error) {
 	}
 }
 
-func startServerConnectClient() (conn *grpc.ClientConn, err error) {
+func startServerConnectClient(cs func() *grpc.Server) (conn *grpc.ClientConn, err error) {
 	ctx := context.Background()
 
 	conn, err = grpc.DialContext(ctx, "",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithContextDialer(dialer()),
+		grpc.WithContextDialer(dialer(cs)),
 		grpc.WithBlock())
 
 	return conn, err
+}
+
+func createManagerServiceServer() *grpc.Server {
+	server := grpc.NewServer()
+	pb.RegisterManagerServiceServer(server, &ManagerService{})
+	return server
 }

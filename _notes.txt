@@ -9,6 +9,9 @@ Context Package Semantics In Go
 https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html
 
 
+Testing Cluster API
+https://cluster-api.sigs.k8s.io/developer/testing.html
+
 Guide to Testing
 https://blog.jetbrains.com/go/2022/11/22/comprehensive-guide-to-testing-in-go/
 
