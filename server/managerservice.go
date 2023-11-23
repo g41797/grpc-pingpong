@@ -22,18 +22,29 @@ func (srv *ManagerService) createStation(req *pb.CreateStationRequest) error {
 
 type ManagerService struct {
 	pb.UnimplementedManagerServiceServer
+	bc *brokerConnector
 }
 
 func (srv *ManagerService) Manage(ctx context.Context, mr *pb.ManageRequest) (*pb.Status, error) {
 
 	status := pb.Status{}
 
-	if err := srv.connect(); err != nil {
+	if srv.bc == nil {
+		bc, err := newBrokerConnector()
+		if err != nil {
+			*status.Text = err.Error()
+			return &status, err
+		}
+		srv.bc = bc
+	}
+
+	mc, err := srv.bc.connect()
+	if err != nil {
 		*status.Text = err.Error()
 		return &status, err
 	}
 
-	defer srv.disconnect()
+	defer mc.Close()
 
 	if req := mr.GetCreatestation(); req != nil {
 		if err := srv.createStation(req); err != nil {
