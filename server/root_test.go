@@ -4,8 +4,6 @@ import (
 	"embed"
 	"os"
 	"testing"
-
-	"github.com/g41797/sputnik/sidecar"
 )
 
 //go:embed _configuration
@@ -16,16 +14,17 @@ func TestMain(m *testing.M) {
 	os.Exit(ecode)
 }
 
+// second level function, because os.Exit does not honor defer
 func testMain(m *testing.M) int {
-	cleanUp, _ := sidecar.UseEmbeddedConfiguration(&embconf)
-	defer cleanUp()
 
-	stop, err := sidecar.StartServices()
+	clean, err := PrepareTestEnvironment(&embconf)
+	defer clean()
+
 	if err != nil {
 		return -1
 	}
-	defer stop()
 
 	ecode := m.Run()
+
 	return ecode
 }

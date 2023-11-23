@@ -2,21 +2,17 @@ package server
 
 import (
 	"context"
-	"log"
-	"net"
 	"testing"
 
 	"githib.com/g41797/grpcadapter/pb"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
 )
 
 func TestManagerService_CreateStation(t *testing.T) {
 
 	conn, err := startServerConnectClient(createManagerServiceServer)
 	if err != nil {
-		log.Fatal(err)
+		t.Fatal(err)
 	}
 	defer conn.Close()
 
@@ -39,33 +35,6 @@ func TestManagerService_CreateStation(t *testing.T) {
 			t.Error(status.GetText())
 		}
 	}
-}
-
-func dialer(cs func() *grpc.Server) func(context.Context, string) (net.Conn, error) {
-	server := cs()
-
-	listener := bufconn.Listen(1024 * 1024)
-
-	go func() {
-		if err := server.Serve(listener); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	return func(context.Context, string) (net.Conn, error) {
-		return listener.Dial()
-	}
-}
-
-func startServerConnectClient(cs func() *grpc.Server) (conn *grpc.ClientConn, err error) {
-	ctx := context.Background()
-
-	conn, err = grpc.DialContext(ctx, "",
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithContextDialer(dialer(cs)),
-		grpc.WithBlock())
-
-	return conn, err
 }
 
 func createManagerServiceServer() *grpc.Server {
