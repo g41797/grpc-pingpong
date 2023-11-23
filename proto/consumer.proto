@@ -41,8 +41,7 @@ message ConsumeRequest {
 message ConsumeMessages {
 	oneof data {
 		ConsumeRequest start = 1;
-		Status error = 2;
-		Stop stop = 3;
+		Stop stop = 2;
 	}
 }
 
