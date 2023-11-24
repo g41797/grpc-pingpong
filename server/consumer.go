@@ -4,41 +4,25 @@ import (
 	"io"
 
 	"githib.com/g41797/grpcadapter/pb"
+	"github.com/memphisdev/memphis.go"
 )
 
-var _ pb.ConsumerServiceServer = (*ConsumerService)(nil)
-
-type ConsumerService struct {
-	pb.UnimplementedConsumerServiceServer
+type consumer struct {
+	bc       *brokerConnector
+	mc       *memphis.Conn
+	station  string
+	producer string
+	options  struct{}
+	started  bool
 }
 
-func (srv *ConsumerService) connect() error {
-	return nil
+func newConsumer(bc *brokerConnector) *consumer {
+	consumer := new(consumer)
+	consumer.bc = bc
+	return consumer
 }
 
-func (srv *ConsumerService) disconnect() error {
-	return nil
-}
-
-func (srv *ConsumerService) startConsume(start *pb.ConsumeRequest) error {
-
-	if err := srv.connect(); err != nil {
-		return err
-	}
-
-	// TODO Add consume activation
-
-	return nil
-}
-
-func (srv *ConsumerService) abortConsume() error {
-	return nil
-}
-
-func (srv *ConsumerService) Consume(c pb.ConsumerService_ConsumeServer) error {
-
-	defer srv.abortConsume()
-	defer srv.disconnect()
+func (srv *consumer) Consume(c pb.ConsumerService_ConsumeServer) error {
 
 	for {
 		next, err := c.Recv()
@@ -46,6 +30,7 @@ func (srv *ConsumerService) Consume(c pb.ConsumerService_ConsumeServer) error {
 
 		if err == io.EOF {
 			resp.Data = &pb.ConsumeResponse_Stop{}
+			srv.abortConsume()
 			c.Send(&resp)
 			return nil
 		}
@@ -54,8 +39,13 @@ func (srv *ConsumerService) Consume(c pb.ConsumerService_ConsumeServer) error {
 			status := pb.Status{}
 			*status.Text = err.Error()
 			resp.Data = &pb.ConsumeResponse_Error{Error: &status}
+			srv.abortConsume()
 			c.Send(&resp)
 			return nil
+		}
+
+		if !srv.started {
+
 		}
 
 		if start := next.GetStart(); start != nil {
@@ -75,4 +65,33 @@ func (srv *ConsumerService) Consume(c pb.ConsumerService_ConsumeServer) error {
 	}
 
 	return nil
+}
+
+func (srv *consumer) startConsume(start *pb.ConsumeRequest) error {
+
+	// TODO Add consume activation
+
+	return nil
+}
+
+func (srv *consumer) abortConsume() error {
+	if !srv.started {
+		return nil
+	}
+
+	return nil
+}
+
+func (srv *consumer) clean() {
+
+	srv.abortConsume()
+
+	if srv == nil {
+		return
+	}
+
+	if srv.mc != nil {
+		srv.mc.Close()
+	}
+
 }
