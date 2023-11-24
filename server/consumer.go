@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"io"
 
 	"githib.com/g41797/grpcadapter/pb"
@@ -22,49 +23,51 @@ func newConsumer(bc *brokerConnector) *consumer {
 	return consumer
 }
 
-func (srv *consumer) Consume(c pb.ConsumerService_ConsumeServer) error {
+// check implementation:
+// - https://github.com/omri86/longlived-grpc/blob/master/server/server.go
+
+func (srv *consumer) Consume(c pb.AdapterService_ConsumeServer) error {
+
+	mc, err := srv.bc.connect()
+	if err != nil {
+		return err
+	}
+	srv.mc = mc
 
 	for {
 		next, err := c.Recv()
-		resp := pb.ConsumeResponse{}
 
 		if err == io.EOF {
-			resp.Data = &pb.ConsumeResponse_Stop{}
-			srv.abortConsume()
-			c.Send(&resp)
 			return nil
 		}
 
 		if err != nil {
-			status := pb.Status{}
-			*status.Text = err.Error()
-			resp.Data = &pb.ConsumeResponse_Error{Error: &status}
+			return err
+		}
+
+		if stop := next.GetStop(); stop != nil {
 			srv.abortConsume()
-			c.Send(&resp)
 			return nil
 		}
 
-		if !srv.started {
+		start := next.GetStart()
 
+		if start == nil {
+			return fmt.Errorf("wrong request")
 		}
 
-		if start := next.GetStart(); start != nil {
-			if err := srv.startConsume(start); err != nil {
-				status := pb.Status{}
-				*status.Text = err.Error()
-				resp.Data = &pb.ConsumeResponse_Error{Error: &status}
-				c.Send(&resp)
-				return nil
-			}
-			continue
+		if srv.started {
+			return fmt.Errorf("already started")
 		}
 
-		resp.Data = &pb.ConsumeResponse_Error{Error: &pb.Status{}}
-		c.Send(&resp)
-		break
+		err = srv.startConsume(start)
+		if err != nil {
+			return err
+		}
+
+		srv.started = true
+		continue
 	}
-
-	return nil
 }
 
 func (srv *consumer) startConsume(start *pb.ConsumeRequest) error {
