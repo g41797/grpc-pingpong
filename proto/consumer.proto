@@ -37,6 +37,5 @@ message ConsumeResponse {
 	oneof data {
 		Msg msg = 1;
 		Status error = 2;
-		Stop stop = 3;
 	};
 }

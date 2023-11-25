@@ -95,7 +95,7 @@ func (c *adapterServiceClient) Consume(ctx context.Context, opts ...grpc.CallOpt
 
 type AdapterService_ConsumeClient interface {
 	Send(*ConsumeMessages) error
-	Recv() (*Msg, error)
+	Recv() (*ConsumeResponse, error)
 	grpc.ClientStream
 }
 
@@ -107,8 +107,8 @@ func (x *adapterServiceConsumeClient) Send(m *ConsumeMessages) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *adapterServiceConsumeClient) Recv() (*Msg, error) {
-	m := new(Msg)
+func (x *adapterServiceConsumeClient) Recv() (*ConsumeResponse, error) {
+	m := new(ConsumeResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func _AdapterService_Consume_Handler(srv interface{}, stream grpc.ServerStream) 
 }
 
 type AdapterService_ConsumeServer interface {
-	Send(*Msg) error
+	Send(*ConsumeResponse) error
 	Recv() (*ConsumeMessages, error)
 	grpc.ServerStream
 }
@@ -209,7 +209,7 @@ type adapterServiceConsumeServer struct {
 	grpc.ServerStream
 }
 
-func (x *adapterServiceConsumeServer) Send(m *Msg) error {
+func (x *adapterServiceConsumeServer) Send(m *ConsumeResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 

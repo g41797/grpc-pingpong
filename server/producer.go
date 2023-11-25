@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"io"
 
 	"githib.com/g41797/grpcadapter/pb"
@@ -61,10 +60,9 @@ func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 				return nil
 			}
 
-			if err = srv.createProducer(start); err != nil {
-				status := pb.Status{}
-				*status.Text = err.Error()
-				stream.SendAndClose(&status)
+			if status := srv.createProducer(start); status != nil {
+
+				stream.SendAndClose(status)
 				return nil
 			}
 			srv.started = true
@@ -82,10 +80,8 @@ func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 				return nil
 			}
 
-			if err = srv.produce(msg); err != nil {
-				status := pb.Status{}
-				*status.Text = err.Error()
-				stream.SendAndClose(&status)
+			if status := srv.produce(msg); status != nil {
+				stream.SendAndClose(status)
 				return nil
 			}
 			continue
@@ -100,12 +96,18 @@ func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 	return nil
 }
 
-func (srv *producer) createProducer(start *pb.CreateProducerRequest) error {
-	return fmt.Errorf("start not implemented")
+func (srv *producer) createProducer(start *pb.CreateProducerRequest) *pb.Status {
+	status := pb.Status{}
+	*status.Text = "start not implemented"
+
+	return &status
 }
 
-func (srv *producer) produce(msg *pb.Msg) error {
-	return fmt.Errorf("produce not implemented")
+func (srv *producer) produce(msg *pb.Msg) *pb.Status {
+	status := pb.Status{}
+	*status.Text = "produce not implemented"
+
+	return &status
 }
 
 func (srv *producer) clean() {
