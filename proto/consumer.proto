@@ -13,18 +13,12 @@ message Consumer {
 	string name = 1;
 }
 
-message ConsumerOpions {
-
-}
-
-message ConsumingOpions {
-
-}
-
 message CreateConsumerRequest {
-	Station station = 1;
-	Consumer consumer = 2;
-	optional ConsumerOpions options = 3;
+	oneof data {
+		Station station = 1;
+		CreateStationRequest createStation = 2;
+	}
+	Consumer consumer = 3;
 }
 
 message DestroyConsumerRequest {
@@ -32,15 +26,9 @@ message DestroyConsumerRequest {
 	Consumer consumer = 2;
 }
 
-message ConsumeRequest {
-	Station station = 1;
-	Consumer consumer = 2;
-	optional ConsumingOpions options = 3;
-}
-
 message ConsumeMessages {
 	oneof data {
-		ConsumeRequest start = 1;
+		CreateConsumerRequest start = 1;
 		Stop stop = 2;
 	}
 }

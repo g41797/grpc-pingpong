@@ -12,14 +12,12 @@ message Producer {
 	string name = 1;
 }
 
-message ProducerOpions {
-
-}
-
 message CreateProducerRequest {
-	Station station = 1;
-	Producer producer = 2;
-	optional ProducerOpions options = 3;
+	oneof data {
+		Station station = 1;
+		CreateStationRequest createStation = 2;
+	}
+	Producer producer = 3;
 }
 
 message DestroyProducerRequest {
@@ -27,15 +25,9 @@ message DestroyProducerRequest {
 	Producer producer = 2;
 }
 
-
-message ProduceRequest {
-	Station station = 1;
-	Producer producer = 2;
-}
-
 message ProduceMessages {
 	oneof data {
-		ProduceRequest start = 1;
+		CreateProducerRequest start = 1;
 		Msg msg = 2;
 		Stop stop = 3;
 	};

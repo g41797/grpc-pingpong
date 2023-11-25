@@ -5,12 +5,13 @@ import (
 	"testing"
 
 	"githib.com/g41797/grpcadapter/pb"
-	"google.golang.org/grpc"
 )
+
+const stName = "AdapterStation"
 
 func TestAdapterService_CreateStation(t *testing.T) {
 
-	conn, err := startServerConnectClient(createAdapterServiceServer)
+	conn, err := startServerConnectClient(createGrpcServer)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -19,14 +20,22 @@ func TestAdapterService_CreateStation(t *testing.T) {
 	client := pb.NewAdapterServiceClient(conn)
 
 	for i := 0; i < 1; i++ {
-		createStation(t, client)
+		createStation(t, client, stName)
 	}
 }
 
-func createStation(t *testing.T, client pb.AdapterServiceClient) {
+func createStation(t *testing.T, client pb.AdapterServiceClient, sname string) {
+
+	station := &pb.Station{Name: sname}
+	abret := &pb.RetentionOpt_Abret{Abret: &pb.AckBasedRet{AckBased: false}}
+	retopt := &pb.RetentionOpt{Retentions: abret}
+	stopt := &pb.StorageOpt{StorageType: pb.StorageOpt_Disk}
+	partopt := &pb.PartitionOpt{Number: 1}
+	sopts := &pb.StationOpions{Part: partopt, Storage: stopt, Retention: retopt}
+
 	mreq := pb.ManageRequest{
 		Data: &pb.ManageRequest_Createstation{
-			Createstation: &pb.CreateStationRequest{Station: &pb.Station{Name: "FirstStation"}}}}
+			Createstation: &pb.CreateStationRequest{Station: station, Options: sopts}}}
 
 	ctx := context.Background()
 
@@ -39,10 +48,4 @@ func createStation(t *testing.T, client pb.AdapterServiceClient) {
 		t.Error(status.GetText())
 	}
 
-}
-
-func createAdapterServiceServer() *grpc.Server {
-	server := grpc.NewServer()
-	pb.RegisterAdapterServiceServer(server, &AdapterService{})
-	return server
 }

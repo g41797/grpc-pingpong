@@ -2,10 +2,9 @@ package server
 
 import (
 	"context"
-	"fmt"
 
 	"githib.com/g41797/grpcadapter/pb"
-	"github.com/memphisdev/memphis.go"
+	"google.golang.org/grpc"
 )
 
 var _ pb.AdapterServiceServer = (*AdapterService)(nil)
@@ -13,6 +12,12 @@ var _ pb.AdapterServiceServer = (*AdapterService)(nil)
 type AdapterService struct {
 	pb.UnimplementedAdapterServiceServer
 	bc *brokerConnector
+}
+
+func createGrpcServer() *grpc.Server {
+	server := grpc.NewServer()
+	pb.RegisterAdapterServiceServer(server, &AdapterService{})
+	return server
 }
 
 func (srv *AdapterService) Manage(ctx context.Context, mr *pb.ManageRequest) (*pb.Status, error) {
@@ -47,38 +52,19 @@ func (srv *AdapterService) Produce(stream pb.AdapterService_ProduceServer) error
 	return err
 }
 
-//----------------
-// CONSUME SERVICE
-//----------------
-
-type consumerMemo struct {
-	mc       *memphis.Conn
-	station  string
-	producer string
-	options  struct{}
-}
-
-func (cm *consumerMemo) clean() {
-	if cm == nil {
-		return
-	}
-
-	if cm.mc != nil {
-		cm.mc.Close()
-	}
-}
-
 func (srv *AdapterService) Consume(c pb.AdapterService_ConsumeServer) error {
+	err := srv.attachConnector()
+	if err != nil {
+		return err
+	}
 
-	return nil
-}
+	consumer := newConsumer(srv.bc)
 
-func (srv *AdapterService) startConsume(start *pb.ConsumeRequest, cm *consumerMemo) error {
-	return fmt.Errorf("startConsume not implemented")
-}
+	defer consumer.clean()
 
-func (srv *AdapterService) abortConsume(cm *consumerMemo) error {
-	return fmt.Errorf("abortConsume not implemented")
+	err = consumer.Consume(c)
+
+	return err
 }
 
 func (srv *AdapterService) attachConnector() error {

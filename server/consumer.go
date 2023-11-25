@@ -70,7 +70,7 @@ func (srv *consumer) Consume(c pb.AdapterService_ConsumeServer) error {
 	}
 }
 
-func (srv *consumer) startConsume(start *pb.ConsumeRequest) error {
+func (srv *consumer) startConsume(start *pb.CreateConsumerRequest) error {
 
 	// TODO Add consume activation
 

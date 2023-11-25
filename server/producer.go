@@ -100,7 +100,7 @@ func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 	return nil
 }
 
-func (srv *producer) createProducer(start *pb.ProduceRequest) error {
+func (srv *producer) createProducer(start *pb.CreateProducerRequest) error {
 	return fmt.Errorf("start not implemented")
 }
 
