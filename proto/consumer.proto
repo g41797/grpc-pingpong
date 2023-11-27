@@ -14,11 +14,8 @@ message Consumer {
 }
 
 message CreateConsumerRequest {
-	oneof data {
-		Station station = 1;
-		CreateStationRequest createStation = 2;
-	}
-	Consumer consumer = 3;
+	Station station = 1;
+	Consumer consumer = 2;
 }
 
 message DestroyConsumerRequest {

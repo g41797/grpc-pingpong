@@ -13,11 +13,8 @@ message Producer {
 }
 
 message CreateProducerRequest {
-	oneof data {
-		Station station = 1;
-		CreateStationRequest createStation = 2;
-	}
-	Producer producer = 3;
+	Station station = 1;
+	Producer producer = 2;
 }
 
 message DestroyProducerRequest {

@@ -5,16 +5,17 @@ package pb;
 option go_package = "githib.com/g41797/grpcadapter;pb";
 
 import "station.proto";
-import "producer.proto";
-import "consumer.proto";
+
+// import "producer.proto";
+// import "consumer.proto";
 
 message ManageRequest {
 	oneof data {
 		CreateStationRequest	createstation = 1;
 		DestroyStationRequest	destroystation = 2;
-		CreateProducerRequest	createproducer = 3;
-		DestroyProducerRequest	destroyproducer = 4;
-		CreateConsumerRequest	createconsumer = 5;
-		DestroyConsumerRequest	destoyconsumer = 6;
+		// CreateProducerRequest	createproducer = 3;
+		// DestroyProducerRequest	destroyproducer = 4;
+		// CreateConsumerRequest	createconsumer = 5;
+		// DestroyConsumerRequest	destoyconsumer = 6;
 	};
 }

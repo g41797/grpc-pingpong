@@ -54,10 +54,12 @@ func (srv *manager) buildChainOfResp() {
 	}
 	srv.proc = append(srv.proc, srv.createStation)
 	srv.proc = append(srv.proc, srv.destroyStation)
-	srv.proc = append(srv.proc, srv.createProducer)
-	srv.proc = append(srv.proc, srv.destroyProducer)
-	srv.proc = append(srv.proc, srv.createConsumer)
-	srv.proc = append(srv.proc, srv.destroyConsumer)
+	/*
+		srv.proc = append(srv.proc, srv.createProducer)
+		srv.proc = append(srv.proc, srv.destroyProducer)
+		srv.proc = append(srv.proc, srv.createConsumer)
+		srv.proc = append(srv.proc, srv.destroyConsumer)
+	*/
 }
 
 func (srv *manager) createStation(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
@@ -76,48 +78,6 @@ func (srv *manager) destroyStation(req *pb.ManageRequest) (responsible bool, sta
 	cmd := req.GetDestroystation()
 	if cmd != nil {
 		return true, connDestroyStation(srv.mc, cmd)
-	}
-
-	return false, nil
-}
-
-func (srv *manager) createProducer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
-
-	cmd := req.GetCreateproducer()
-	if cmd != nil {
-		_, status := connCreateProducer(srv.mc, cmd)
-		return true, status
-	}
-
-	return false, nil
-}
-
-func (srv *manager) destroyProducer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
-
-	cmd := req.GetDestroyproducer()
-	if cmd != nil {
-		return true, connDestroyProducer(srv.mc, cmd)
-	}
-
-	return false, nil
-}
-
-func (srv *manager) createConsumer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
-
-	cmd := req.GetCreateconsumer()
-	if cmd != nil {
-		_, status := connCreateConsumer(srv.mc, cmd)
-		return true, status
-	}
-
-	return false, nil
-}
-
-func (srv *manager) destroyConsumer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
-
-	cmd := req.GetDestoyconsumer()
-	if cmd != nil {
-		return true, connDestroyConsumer(srv.mc, cmd)
 	}
 
 	return false, nil
@@ -190,6 +150,50 @@ func connDestroyStation(conn *memphis.Conn, req *pb.DestroyStationRequest) *pb.S
 	return nil
 }
 
+/*
+func (srv *manager) createProducer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
+
+	cmd := req.GetCreateproducer()
+	if cmd != nil {
+		_, status := connCreateProducer(srv.mc, cmd)
+		return true, status
+	}
+
+	return false, nil
+}
+
+func (srv *manager) destroyProducer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
+
+	cmd := req.GetDestroyproducer()
+	if cmd != nil {
+		return true, connDestroyProducer(srv.mc, cmd)
+	}
+
+	return false, nil
+}
+
+func (srv *manager) createConsumer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
+
+	cmd := req.GetCreateconsumer()
+	if cmd != nil {
+		_, status := connCreateConsumer(srv.mc, cmd)
+		return true, status
+	}
+
+	return false, nil
+}
+
+func (srv *manager) destroyConsumer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
+
+	cmd := req.GetDestoyconsumer()
+	if cmd != nil {
+		return true, connDestroyConsumer(srv.mc, cmd)
+	}
+
+	return false, nil
+}
+
+
 func connCreateProducer(conn *memphis.Conn, req *pb.CreateProducerRequest) (string, *pb.Status) {
 	return "", nil
 }
@@ -205,3 +209,4 @@ func connCreateConsumer(conn *memphis.Conn, req *pb.CreateConsumerRequest) (stri
 func connDestroyConsumer(conn *memphis.Conn, req *pb.DestroyConsumerRequest) *pb.Status {
 	return nil
 }
+*/
