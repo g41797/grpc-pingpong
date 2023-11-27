@@ -5,7 +5,6 @@ package pb;
 option go_package = "githib.com/g41797/grpcadapter;pb";
 
 import "station.proto";
-import "stop.proto";
 import "msg.proto";
 
 message Producer {
@@ -26,6 +25,5 @@ message ProduceMessages {
 	oneof data {
 		CreateProducerRequest start = 1;
 		Msg msg = 2;
-		Stop stop = 3;
 	};
   }

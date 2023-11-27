@@ -19,9 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AdapterService_Manage_FullMethodName  = "/pb.AdapterService/Manage"
-	AdapterService_Produce_FullMethodName = "/pb.AdapterService/Produce"
-	AdapterService_Consume_FullMethodName = "/pb.AdapterService/Consume"
+	AdapterService_Manage_FullMethodName         = "/pb.AdapterService/Manage"
+	AdapterService_CreateStation_FullMethodName  = "/pb.AdapterService/CreateStation"
+	AdapterService_DestroyStation_FullMethodName = "/pb.AdapterService/DestroyStation"
+	AdapterService_Produce_FullMethodName        = "/pb.AdapterService/Produce"
+	AdapterService_Consume_FullMethodName        = "/pb.AdapterService/Consume"
 )
 
 // AdapterServiceClient is the client API for AdapterService service.
@@ -29,6 +31,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdapterServiceClient interface {
 	Manage(ctx context.Context, in *ManageRequest, opts ...grpc.CallOption) (*Status, error)
+	CreateStation(ctx context.Context, in *CreateStationRequest, opts ...grpc.CallOption) (*Status, error)
+	DestroyStation(ctx context.Context, in *DestroyStationRequest, opts ...grpc.CallOption) (*Status, error)
 	Produce(ctx context.Context, opts ...grpc.CallOption) (AdapterService_ProduceClient, error)
 	Consume(ctx context.Context, opts ...grpc.CallOption) (AdapterService_ConsumeClient, error)
 }
@@ -44,6 +48,24 @@ func NewAdapterServiceClient(cc grpc.ClientConnInterface) AdapterServiceClient {
 func (c *adapterServiceClient) Manage(ctx context.Context, in *ManageRequest, opts ...grpc.CallOption) (*Status, error) {
 	out := new(Status)
 	err := c.cc.Invoke(ctx, AdapterService_Manage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adapterServiceClient) CreateStation(ctx context.Context, in *CreateStationRequest, opts ...grpc.CallOption) (*Status, error) {
+	out := new(Status)
+	err := c.cc.Invoke(ctx, AdapterService_CreateStation_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adapterServiceClient) DestroyStation(ctx context.Context, in *DestroyStationRequest, opts ...grpc.CallOption) (*Status, error) {
+	out := new(Status)
+	err := c.cc.Invoke(ctx, AdapterService_DestroyStation_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -120,6 +142,8 @@ func (x *adapterServiceConsumeClient) Recv() (*ConsumeResponse, error) {
 // for forward compatibility
 type AdapterServiceServer interface {
 	Manage(context.Context, *ManageRequest) (*Status, error)
+	CreateStation(context.Context, *CreateStationRequest) (*Status, error)
+	DestroyStation(context.Context, *DestroyStationRequest) (*Status, error)
 	Produce(AdapterService_ProduceServer) error
 	Consume(AdapterService_ConsumeServer) error
 	mustEmbedUnimplementedAdapterServiceServer()
@@ -131,6 +155,12 @@ type UnimplementedAdapterServiceServer struct {
 
 func (UnimplementedAdapterServiceServer) Manage(context.Context, *ManageRequest) (*Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Manage not implemented")
+}
+func (UnimplementedAdapterServiceServer) CreateStation(context.Context, *CreateStationRequest) (*Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateStation not implemented")
+}
+func (UnimplementedAdapterServiceServer) DestroyStation(context.Context, *DestroyStationRequest) (*Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestroyStation not implemented")
 }
 func (UnimplementedAdapterServiceServer) Produce(AdapterService_ProduceServer) error {
 	return status.Errorf(codes.Unimplemented, "method Produce not implemented")
@@ -165,6 +195,42 @@ func _AdapterService_Manage_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdapterServiceServer).Manage(ctx, req.(*ManageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdapterService_CreateStation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateStationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdapterServiceServer).CreateStation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdapterService_CreateStation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdapterServiceServer).CreateStation(ctx, req.(*CreateStationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdapterService_DestroyStation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DestroyStationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdapterServiceServer).DestroyStation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdapterService_DestroyStation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdapterServiceServer).DestroyStation(ctx, req.(*DestroyStationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -231,6 +297,14 @@ var AdapterService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Manage",
 			Handler:    _AdapterService_Manage_Handler,
+		},
+		{
+			MethodName: "CreateStation",
+			Handler:    _AdapterService_CreateStation_Handler,
+		},
+		{
+			MethodName: "DestroyStation",
+			Handler:    _AdapterService_DestroyStation_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

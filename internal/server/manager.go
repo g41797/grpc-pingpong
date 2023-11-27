@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"githib.com/g41797/grpcadapter/pb"
+	"github.com/gogo/status"
 	"github.com/memphisdev/memphis.go"
+	"google.golang.org/grpc/codes"
 )
 
 type manageRequest func(req *pb.ManageRequest) (responsible bool, status *pb.Status)
@@ -27,7 +29,8 @@ func (srv *manager) Manage(ctx context.Context, mr *pb.ManageRequest) (*pb.Statu
 
 	mc, err := srv.bc.connect()
 	if err != nil {
-		*status.Text = err.Error()
+		text := err.Error()
+		status.Text = &text
 		return &status, err
 	}
 
@@ -42,10 +45,17 @@ func (srv *manager) Manage(ctx context.Context, mr *pb.ManageRequest) (*pb.Statu
 			return status, nil
 		}
 	}
-
-	*status.Text = "not implemented"
+	text := "not implemented"
+	status.Text = &text
 
 	return &status, nil
+}
+
+func (srv *manager) CreateStation(ctx context.Context, req *pb.CreateStationRequest) (*pb.Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateStation not implemented")
+}
+func (srv *manager) DestroyStation(ctx context.Context, req *pb.DestroyStationRequest) (*pb.Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestroyStation not implemented")
 }
 
 func (srv *manager) buildChainOfResp() {
@@ -96,9 +106,12 @@ func (srv *manager) clean() {
 func connCreateStation(conn *memphis.Conn, req *pb.CreateStationRequest) (*memphis.Station, *pb.Status) {
 
 	status := pb.Status{}
+	text := ""
+
 	station := req.GetStation()
 	if (station == nil) || (len(station.GetName()) == 0) {
-		*status.Text = "empty station"
+		text = "empty station"
+		status.Text = &text
 		return nil, &status
 	}
 
@@ -107,13 +120,15 @@ func connCreateStation(conn *memphis.Conn, req *pb.CreateStationRequest) (*memph
 	opts, err := stationOpts(req)
 
 	if err != nil {
-		*status.Text = err.Error()
+		text = err.Error()
+		status.Text = &text
 		return nil, &status
 	}
 
 	mst, err := conn.CreateStation(sname, opts...)
 	if err != nil {
-		*status.Text = err.Error()
+		text = err.Error()
+		status.Text = &text
 		return nil, &status
 	}
 
@@ -128,9 +143,12 @@ func stationOpts(req *pb.CreateStationRequest) ([]memphis.StationOpt, error) {
 func connDestroyStation(conn *memphis.Conn, req *pb.DestroyStationRequest) *pb.Status {
 
 	status := pb.Status{}
+	text := ""
+
 	station := req.GetStation()
 	if (station == nil) || (len(station.GetName()) == 0) {
-		*status.Text = "empty station"
+		text = "empty station"
+		status.Text = &text
 		return &status
 	}
 
@@ -143,7 +161,8 @@ func connDestroyStation(conn *memphis.Conn, req *pb.DestroyStationRequest) *pb.S
 
 	err = st.Destroy()
 	if err != nil {
-		*status.Text = err.Error()
+		text = err.Error()
+		status.Text = &text
 		return &status
 	}
 

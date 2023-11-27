@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"githib.com/g41797/grpcadapter/pb"
+	"github.com/gogo/status"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 )
 
 var _ pb.AdapterServiceServer = (*AdapterService)(nil)
@@ -26,7 +28,8 @@ func (srv *AdapterService) Manage(ctx context.Context, mr *pb.ManageRequest) (*p
 
 	err := srv.attachConnector()
 	if err != nil {
-		*status.Text = err.Error()
+		text := err.Error()
+		status.Text = &text
 		return &status, err
 	}
 
@@ -35,6 +38,13 @@ func (srv *AdapterService) Manage(ctx context.Context, mr *pb.ManageRequest) (*p
 	defer mngr.clean()
 
 	return mngr.Manage(ctx, mr)
+}
+
+func (srv *AdapterService) CreateStation(ctx context.Context, req *pb.CreateStationRequest) (*pb.Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateStation not implemented")
+}
+func (srv *AdapterService) DestroyStation(ctx context.Context, req *pb.DestroyStationRequest) (*pb.Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestroyStation not implemented")
 }
 
 func (srv *AdapterService) Produce(stream pb.AdapterService_ProduceServer) error {
