@@ -21,36 +21,36 @@ import (
 // Ensure running tests in ready environment
 func PrepareTestEnvironment(embconf *embed.FS) (cleanFunc func(), err error) {
 
-	cleaner := new(cleaner)
+	cleaner := new(sidecar.Cleaner)
 
 	// Create configuration and env files from embedded ones
 	cleanUp, err := sidecar.UseEmbeddedConfiguration(embconf)
 	if err != nil {
-		return cleaner.clean, err
+		return cleaner.Clean, err
 	}
 
-	cleaner.push(cleanUp)
+	cleaner.Push(cleanUp)
 
 	// Setup environment variables from env files
 	// Replaces vscode setting in launch.json file
 	// Reason - running tests in github without vscode
 	err = sidecar.LoadEnv()
 	if err != nil {
-		return cleaner.clean, err
+		return cleaner.Clean, err
 	}
 
 	// Start broker and additional servers using docker compose file
 	stop, err := sidecar.StartServices()
 	if err != nil {
-		return cleaner.clean, err
+		return cleaner.Clean, err
 	}
-	cleaner.push(stop)
+	cleaner.Push(stop)
 
 	// Connect to broker - ensure running tests in ready environment
 	conn := tryConnect()
-	cleaner.push(func() { conn.Close() })
+	cleaner.Push(func() { conn.Close() })
 
-	return cleaner.clean, nil
+	return cleaner.Clean, nil
 
 }
 
@@ -187,22 +187,4 @@ func connect2(hostname, username, creds string, configuration *CONFTEST) (*nats.
 	}
 
 	return nc, nil
-}
-
-type cleaner struct {
-	cleans []func()
-}
-
-func (c *cleaner) push(cf func()) {
-	c.cleans = append([]func(){cf}, c.cleans...)
-}
-
-func (c *cleaner) clean() {
-	if c == nil {
-		return
-	}
-
-	for _, cf := range c.cleans {
-		cf()
-	}
 }

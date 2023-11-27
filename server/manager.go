@@ -133,11 +133,60 @@ func (srv *manager) clean() {
 	}
 }
 
-func connCreateStation(conn *memphis.Conn, req *pb.CreateStationRequest) (string, *pb.Status) {
-	return "", nil
+func connCreateStation(conn *memphis.Conn, req *pb.CreateStationRequest) (*memphis.Station, *pb.Status) {
+
+	status := pb.Status{}
+	station := req.GetStation()
+	if (station == nil) || (len(station.GetName()) == 0) {
+		*status.Text = "empty station"
+		return nil, &status
+	}
+
+	sname := station.GetName()
+
+	opts, err := stationOpts(req)
+
+	if err != nil {
+		*status.Text = err.Error()
+		return nil, &status
+	}
+
+	mst, err := conn.CreateStation(sname, opts...)
+	if err != nil {
+		*status.Text = err.Error()
+		return nil, &status
+	}
+
+	return mst, nil
+}
+
+func stationOpts(req *pb.CreateStationRequest) ([]memphis.StationOpt, error) {
+	opts := make([]memphis.StationOpt, 0)
+	return opts, nil
 }
 
 func connDestroyStation(conn *memphis.Conn, req *pb.DestroyStationRequest) *pb.Status {
+
+	status := pb.Status{}
+	station := req.GetStation()
+	if (station == nil) || (len(station.GetName()) == 0) {
+		*status.Text = "empty station"
+		return &status
+	}
+
+	sname := station.GetName()
+
+	st, err := conn.CreateStation(sname)
+	if err != nil {
+		return nil
+	}
+
+	err = st.Destroy()
+	if err != nil {
+		*status.Text = err.Error()
+		return &status
+	}
+
 	return nil
 }
 
