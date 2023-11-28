@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"githib.com/g41797/grpcadapter/pb"
+	"githib.com/g41797/memphisgrpc/pb"
 )
 
 const (

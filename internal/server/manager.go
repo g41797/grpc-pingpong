@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 
-	"githib.com/g41797/grpcadapter/pb"
+	"githib.com/g41797/memphisgrpc/pb"
 	"github.com/gogo/status"
 	"github.com/memphisdev/memphis.go"
 	"google.golang.org/grpc/codes"

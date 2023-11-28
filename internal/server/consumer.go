@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"githib.com/g41797/grpcadapter/pb"
+	"githib.com/g41797/memphisgrpc/pb"
 	"github.com/memphisdev/memphis.go"
 )
 

@@ -1,4 +1,4 @@
-# grpcadapter [![Go](https://github.com/g41797/grpcadapter/actions/workflows/go.yml/badge.svg)](https://github.com/g41797/grpcadapter/actions/workflows/go.yml)
+# memphisgrpc [![Go](https://github.com/g41797/memphisgrpc/actions/workflows/go.yml/badge.svg)](https://github.com/g41797/memphisgrpc/actions/workflows/go.yml)
 
 gRPC go-based adapter for [Memphis broker](https://memphis.dev)
 

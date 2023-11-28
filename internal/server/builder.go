@@ -1,6 +1,6 @@
 package server
 
-import "githib.com/g41797/grpcadapter/pb"
+import "githib.com/g41797/memphisgrpc/pb"
 
 func createStationRequest(sname string) (mreq *pb.ManageRequest) {
 

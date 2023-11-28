@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package pb;
 
-option go_package = "githib.com/g41797/grpcadapter;pb";
+option go_package = "githib.com/g41797/memphisgrpc;pb";
 
 import "station.proto";
 import "msg.proto";
