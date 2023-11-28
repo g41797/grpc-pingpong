@@ -104,6 +104,20 @@ func produceToStation(t *testing.T, client pb.AdapterServiceClient, sname, pname
 		t.Errorf("Create producer error %v", err)
 	}
 
+	headers := map[string]string{"1": "1", "2": "2"}
+	body := []byte("first grpc produce")
+
+	produceMessage := produceRequest(headers, body)
+	err = pstr.Send(produceMessage)
+	if err != nil {
+		t.Errorf("Produce error %v", err)
+	}
+
+	err = pstr.Send(stopProduceRequest())
+	if err != nil {
+		t.Errorf("Stop produce error %v", err)
+	}
+
 	status, err := pstr.CloseAndRecv()
 	if err != nil {
 		t.Errorf("Failed CloseAndRecv %v", err)

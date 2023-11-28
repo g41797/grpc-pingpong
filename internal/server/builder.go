@@ -43,3 +43,11 @@ func produceRequest(hdrs map[string]string, body []byte) *pb.ProduceMessages {
 
 	return request
 }
+
+func stopProduceRequest() *pb.ProduceMessages {
+	stop := &pb.ProduceMessages_Stop{Stop: &pb.Stop{}}
+
+	request := &pb.ProduceMessages{Data: stop}
+
+	return request
+}

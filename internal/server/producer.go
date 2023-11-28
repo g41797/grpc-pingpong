@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"io"
 
 	"githib.com/g41797/memphisgrpc/pb"
@@ -48,8 +47,13 @@ func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 			return err
 		}
 
-		start := next.GetStart()
+		stop := next.GetStop()
+		if stop != nil {
+			srv.finish(&pb.Status{})
+			return nil
+		}
 
+		start := next.GetStart()
 		if start != nil {
 
 			if srv.started {
@@ -123,7 +127,24 @@ func (srv *producer) createProducer(start *pb.CreateProducerRequest) error {
 }
 
 func (srv *producer) produce(msg *pb.Msg) error {
-	return fmt.Errorf("produce not implemented")
+
+	hdrs := memphis.Headers{}
+	hdrs.New()
+
+	h := msg.GetHeaders()
+
+	if h != nil {
+		hh := h.GetHeaders()
+		for k, v := range hh {
+			hdrs.Add(k, v)
+		}
+	}
+
+	body := msg.GetBody()
+
+	err := srv.mpr.Produce(body, memphis.MsgHeaders(hdrs), memphis.AsyncProduce())
+
+	return err
 }
 
 func (srv *producer) finish(status *pb.Status) {

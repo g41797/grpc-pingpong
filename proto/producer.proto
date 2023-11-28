@@ -6,6 +6,7 @@ option go_package = "githib.com/g41797/memphisgrpc;pb";
 
 import "station.proto";
 import "msg.proto";
+import "stop.proto";
 
 message Producer {
 	string name = 1;
@@ -25,5 +26,6 @@ message ProduceMessages {
 	oneof data {
 		CreateProducerRequest start = 1;
 		Msg msg = 2;
+		Stop stop = 3;
 	};
   }
