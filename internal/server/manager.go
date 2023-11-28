@@ -4,93 +4,51 @@ import (
 	"context"
 
 	"githib.com/g41797/memphisgrpc/pb"
-	"github.com/gogo/status"
 	"github.com/memphisdev/memphis.go"
-	"google.golang.org/grpc/codes"
 )
 
-type manageRequest func(req *pb.ManageRequest) (responsible bool, status *pb.Status)
-
 type manager struct {
-	bc   *brokerConnector
-	proc []manageRequest
-	mc   *memphis.Conn
+	bc *brokerConnector
+	mc *memphis.Conn
 }
 
 func newManager(bc *brokerConnector) *manager {
 	manager := new(manager)
 	manager.bc = bc
-	manager.buildChainOfResp()
 	return manager
 }
 
-func (srv *manager) Manage(ctx context.Context, mr *pb.ManageRequest) (*pb.Status, error) {
-	status := pb.Status{}
+func (srv *manager) CreateStation(ctx context.Context, req *pb.CreateStationRequest) (*pb.Status, error) {
 
 	mc, err := srv.bc.connect()
 	if err != nil {
 		text := err.Error()
+		status := pb.Status{}
 		status.Text = &text
 		return &status, err
 	}
 
 	srv.mc = mc
 
-	for _, prc := range srv.proc {
-		resp, status := prc(mr)
-		if resp {
-			if status == nil {
-				status = &pb.Status{}
-			}
-			return status, nil
-		}
-	}
-	text := "not implemented"
-	status.Text = &text
+	_, status := connCreateStation(srv.mc, req)
 
-	return &status, nil
-}
-
-func (srv *manager) CreateStation(ctx context.Context, req *pb.CreateStationRequest) (*pb.Status, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateStation not implemented")
+	return status, nil
 }
 func (srv *manager) DestroyStation(ctx context.Context, req *pb.DestroyStationRequest) (*pb.Status, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DestroyStation not implemented")
-}
 
-func (srv *manager) buildChainOfResp() {
-	if srv.proc != nil {
-		return
-	}
-	srv.proc = append(srv.proc, srv.createStation)
-	srv.proc = append(srv.proc, srv.destroyStation)
-	/*
-		srv.proc = append(srv.proc, srv.createProducer)
-		srv.proc = append(srv.proc, srv.destroyProducer)
-		srv.proc = append(srv.proc, srv.createConsumer)
-		srv.proc = append(srv.proc, srv.destroyConsumer)
-	*/
-}
-
-func (srv *manager) createStation(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
-
-	cmd := req.GetCreatestation()
-	if cmd != nil {
-		_, status := connCreateStation(srv.mc, cmd)
-		return true, status
+	mc, err := srv.bc.connect()
+	if err != nil {
+		text := err.Error()
+		status := pb.Status{}
+		status.Text = &text
+		return &status, err
 	}
 
-	return false, nil
-}
+	srv.mc = mc
 
-func (srv *manager) destroyStation(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
+	status := connDestroyStation(srv.mc, req)
 
-	cmd := req.GetDestroystation()
-	if cmd != nil {
-		return true, connDestroyStation(srv.mc, cmd)
-	}
-
-	return false, nil
+	return status, nil
 }
 
 func (srv *manager) clean() {
@@ -132,7 +90,7 @@ func connCreateStation(conn *memphis.Conn, req *pb.CreateStationRequest) (*memph
 		return nil, &status
 	}
 
-	return mst, nil
+	return mst, &status
 }
 
 func stationOpts(req *pb.CreateStationRequest) ([]memphis.StationOpt, error) {
@@ -156,7 +114,7 @@ func connDestroyStation(conn *memphis.Conn, req *pb.DestroyStationRequest) *pb.S
 
 	st, err := conn.CreateStation(sname)
 	if err != nil {
-		return nil
+		return &status
 	}
 
 	err = st.Destroy()
@@ -166,53 +124,10 @@ func connDestroyStation(conn *memphis.Conn, req *pb.DestroyStationRequest) *pb.S
 		return &status
 	}
 
-	return nil
+	return &status
 }
 
 /*
-func (srv *manager) createProducer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
-
-	cmd := req.GetCreateproducer()
-	if cmd != nil {
-		_, status := connCreateProducer(srv.mc, cmd)
-		return true, status
-	}
-
-	return false, nil
-}
-
-func (srv *manager) destroyProducer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
-
-	cmd := req.GetDestroyproducer()
-	if cmd != nil {
-		return true, connDestroyProducer(srv.mc, cmd)
-	}
-
-	return false, nil
-}
-
-func (srv *manager) createConsumer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
-
-	cmd := req.GetCreateconsumer()
-	if cmd != nil {
-		_, status := connCreateConsumer(srv.mc, cmd)
-		return true, status
-	}
-
-	return false, nil
-}
-
-func (srv *manager) destroyConsumer(req *pb.ManageRequest) (responsible bool, status *pb.Status) {
-
-	cmd := req.GetDestoyconsumer()
-	if cmd != nil {
-		return true, connDestroyConsumer(srv.mc, cmd)
-	}
-
-	return false, nil
-}
-
-
 func connCreateProducer(conn *memphis.Conn, req *pb.CreateProducerRequest) (string, *pb.Status) {
 	return "", nil
 }

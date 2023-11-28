@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"io"
 
 	"githib.com/g41797/memphisgrpc/pb"
@@ -9,8 +10,10 @@ import (
 
 type producer struct {
 	bc      *brokerConnector
-	mc      *memphis.Conn
 	started bool
+	stream  pb.AdapterService_ProduceServer
+	mc      *memphis.Conn
+	mpr     *memphis.Producer
 }
 
 func newProducer(bc *brokerConnector) *producer {
@@ -21,14 +24,14 @@ func newProducer(bc *brokerConnector) *producer {
 
 func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 
-	pm := prmemento{stream: stream}
+	srv.stream = stream
+	status := pb.Status{}
 
 	mc, err := srv.bc.connect()
 	if err != nil {
-		status := pb.Status{}
 		text := err.Error()
 		status.Text = &text
-		pm.finish(&status)
+		srv.finish(&status)
 		return nil
 	}
 
@@ -38,7 +41,7 @@ func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 		next, err := stream.Recv()
 
 		if err == io.EOF {
-			pm.finish(&pb.Status{})
+			srv.finish(&pb.Status{})
 			return nil
 		}
 		if err != nil {
@@ -53,13 +56,14 @@ func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 				status := pb.Status{}
 				text := "already started"
 				status.Text = &text
-				pm.finish(&status)
+				srv.finish(&status)
 				return nil
 			}
 
-			if status := srv.createProducer(start); status != nil {
-
-				pm.finish(status)
+			if err := srv.createProducer(start); err != nil {
+				text := err.Error()
+				status.Text = &text
+				srv.finish(&status)
 				return nil
 			}
 			srv.started = true
@@ -74,12 +78,14 @@ func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 				status := pb.Status{}
 				text := "not started yet"
 				status.Text = &text
-				pm.finish(&status)
+				srv.finish(&status)
 				return nil
 			}
 
-			if status := pm.produce(msg); status != nil {
-				pm.finish(status)
+			if err := srv.produce(msg); err != nil {
+				text := err.Error()
+				status.Text = &text
+				srv.finish(&status)
 				return nil
 			}
 			continue
@@ -88,19 +94,48 @@ func (srv *producer) Produce(stream pb.AdapterService_ProduceServer) error {
 		status := pb.Status{}
 		text := "wrong client request"
 		status.Text = &text
-		pm.finish(&status)
+		srv.finish(&status)
 		break
 	}
 
 	return nil
 }
 
-func (srv *producer) createProducer(start *pb.CreateProducerRequest) *pb.Status {
-	status := pb.Status{}
-	text := "start not implemented"
-	status.Text = &text
+func (srv *producer) createProducer(start *pb.CreateProducerRequest) error {
 
-	return &status
+	station := start.Station.GetName()
+
+	st, err := srv.mc.CreateStation(station)
+	if err != nil {
+		return err
+	}
+
+	producer := start.Producer.GetName()
+
+	prod, err := st.CreateProducer(producer)
+	if err != nil {
+		return err
+	}
+
+	srv.mpr = prod
+
+	return nil
+}
+
+func (srv *producer) produce(msg *pb.Msg) error {
+	return fmt.Errorf("produce not implemented")
+}
+
+func (srv *producer) finish(status *pb.Status) {
+	if srv == nil {
+		return
+	}
+
+	if srv.stream == nil {
+		return
+	}
+
+	srv.stream.SendAndClose(status)
 }
 
 func (srv *producer) clean() {
@@ -108,36 +143,11 @@ func (srv *producer) clean() {
 		return
 	}
 
+	if srv.mpr != nil {
+		srv.mpr.Destroy()
+	}
+
 	if srv.mc != nil {
 		srv.mc.Close()
-	}
-}
-
-type prmemento struct {
-	stream pb.AdapterService_ProduceServer
-	mpr    *memphis.Producer
-}
-
-func (pm *prmemento) produce(msg *pb.Msg) *pb.Status {
-	status := pb.Status{}
-	text := "produce not implemented"
-	status.Text = &text
-
-	return &status
-}
-
-func (pm *prmemento) finish(status *pb.Status) {
-	if pm == nil {
-		return
-	}
-
-	if pm.stream == nil {
-		return
-	}
-
-	pm.stream.SendAndClose(status)
-
-	if pm.mpr != nil {
-		pm.mpr.Destroy()
 	}
 }

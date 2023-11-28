@@ -58,16 +58,35 @@ func TestAdapterService_Produce(t *testing.T) {
 
 func createStation(t *testing.T, client pb.AdapterServiceClient, sname string) {
 
-	mreq := createStationRequest(sname)
+	req := createStationRequest(sname)
 
-	manage(t, client, mreq)
+	ctx := context.Background()
+
+	status, err := client.CreateStation(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(status.GetText()) > 0 {
+		t.Error(status.GetText())
+	}
+
 }
 
 func destroyStation(t *testing.T, client pb.AdapterServiceClient, sname string) {
 
-	mreq := destroyStationRequest(sname)
+	req := destroyStationRequest(sname)
 
-	manage(t, client, mreq)
+	ctx := context.Background()
+
+	status, err := client.DestroyStation(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(status.GetText()) > 0 {
+		t.Error(status.GetText())
+	}
 }
 
 func produceToStation(t *testing.T, client pb.AdapterServiceClient, sname, pname string) {
@@ -94,18 +113,4 @@ func produceToStation(t *testing.T, client pb.AdapterServiceClient, sname, pname
 		t.Errorf("Failed produce status %s", status.GetText())
 	}
 
-}
-
-func manage(t *testing.T, client pb.AdapterServiceClient, mreq *pb.ManageRequest) {
-
-	ctx := context.Background()
-
-	status, err := client.Manage(ctx, mreq)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(status.GetText()) > 0 {
-		t.Error(status.GetText())
-	}
 }

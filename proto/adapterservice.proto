@@ -6,12 +6,10 @@ option go_package = "githib.com/g41797/memphisgrpc;pb";
 
 import "status.proto";
 import "station.proto";
-import "manager.proto";
 import "producer.proto";
 import "consumer.proto";
 
 service AdapterService {
-	rpc Manage(ManageRequest) returns (Status) {}
 	rpc CreateStation(CreateStationRequest) returns (Status) {}
 	rpc DestroyStation(DestroyStationRequest) returns (Status) {}
 	rpc Produce(stream ProduceMessages) returns (Status) {}

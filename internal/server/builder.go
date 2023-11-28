@@ -2,7 +2,7 @@ package server
 
 import "githib.com/g41797/memphisgrpc/pb"
 
-func createStationRequest(sname string) (mreq *pb.ManageRequest) {
+func createStationRequest(sname string) (req *pb.CreateStationRequest) {
 
 	station := &pb.Station{Name: sname}
 	abret := &pb.RetentionOpt_Abret{Abret: &pb.AckBasedRet{AckBased: false}}
@@ -11,24 +11,16 @@ func createStationRequest(sname string) (mreq *pb.ManageRequest) {
 	partopt := &pb.PartitionOpt{Number: 1}
 	sopts := &pb.StationOpions{Part: partopt, Storage: stopt, Retention: retopt}
 
-	mreq = &pb.ManageRequest{
-		Data: &pb.ManageRequest_Createstation{
-			Createstation: &pb.CreateStationRequest{Station: station, Options: sopts}}}
-
-	return mreq
+	return &pb.CreateStationRequest{Station: station, Options: sopts}
 }
 
-func destroyStationRequest(sname string) (mreq *pb.ManageRequest) {
+func destroyStationRequest(sname string) (req *pb.DestroyStationRequest) {
 
 	station := &pb.Station{Name: sname}
 
 	destst := &pb.DestroyStationRequest{Station: station}
 
-	mreq = &pb.ManageRequest{
-		Data: &pb.ManageRequest_Destroystation{
-			Destroystation: destst}}
-
-	return mreq
+	return destst
 }
 
 func startProduceRequest(sname, pname string) *pb.ProduceMessages {

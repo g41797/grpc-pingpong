@@ -4,9 +4,7 @@ import (
 	"context"
 
 	"githib.com/g41797/memphisgrpc/pb"
-	"github.com/gogo/status"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 )
 
 var _ pb.AdapterServiceServer = (*AdapterService)(nil)
@@ -22,8 +20,7 @@ func CreateGrpcServer() *grpc.Server {
 	return server
 }
 
-func (srv *AdapterService) Manage(ctx context.Context, mr *pb.ManageRequest) (*pb.Status, error) {
-
+func (srv *AdapterService) CreateStation(ctx context.Context, req *pb.CreateStationRequest) (*pb.Status, error) {
 	status := pb.Status{}
 
 	err := srv.attachConnector()
@@ -37,14 +34,23 @@ func (srv *AdapterService) Manage(ctx context.Context, mr *pb.ManageRequest) (*p
 
 	defer mngr.clean()
 
-	return mngr.Manage(ctx, mr)
-}
-
-func (srv *AdapterService) CreateStation(ctx context.Context, req *pb.CreateStationRequest) (*pb.Status, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateStation not implemented")
+	return mngr.CreateStation(ctx, req)
 }
 func (srv *AdapterService) DestroyStation(ctx context.Context, req *pb.DestroyStationRequest) (*pb.Status, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DestroyStation not implemented")
+	status := &pb.Status{}
+
+	err := srv.attachConnector()
+	if err != nil {
+		text := err.Error()
+		status.Text = &text
+		return status, err
+	}
+
+	mngr := newManager(srv.bc)
+
+	defer mngr.clean()
+
+	return mngr.DestroyStation(ctx, req)
 }
 
 func (srv *AdapterService) Produce(stream pb.AdapterService_ProduceServer) error {
@@ -55,7 +61,6 @@ func (srv *AdapterService) Produce(stream pb.AdapterService_ProduceServer) error
 	}
 
 	producer := newProducer(srv.bc)
-
 	defer producer.clean()
 
 	err = producer.Produce(stream)
