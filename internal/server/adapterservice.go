@@ -16,7 +16,7 @@ type AdapterService struct {
 	bc *brokerConnector
 }
 
-func createGrpcServer() *grpc.Server {
+func CreateGrpcServer() *grpc.Server {
 	server := grpc.NewServer()
 	pb.RegisterAdapterServiceServer(server, &AdapterService{})
 	return server

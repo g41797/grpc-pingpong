@@ -54,8 +54,18 @@ func PrepareTestEnvironment(embconf *embed.FS) (cleanFunc func(), err error) {
 
 }
 
-func dialer(cs func() *grpc.Server) func(context.Context, string) (net.Conn, error) {
-	server := cs()
+func startServerConnectClient(server *grpc.Server) (conn *grpc.ClientConn, err error) {
+	ctx := context.Background()
+
+	conn, err = grpc.DialContext(ctx, "",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithContextDialer(dialer(server)),
+		grpc.WithBlock())
+
+	return conn, err
+}
+
+func dialer(server *grpc.Server) func(context.Context, string) (net.Conn, error) {
 
 	listener := bufconn.Listen(1024 * 1024)
 
@@ -68,17 +78,6 @@ func dialer(cs func() *grpc.Server) func(context.Context, string) (net.Conn, err
 	return func(context.Context, string) (net.Conn, error) {
 		return listener.Dial()
 	}
-}
-
-func startServerConnectClient(cs func() *grpc.Server) (conn *grpc.ClientConn, err error) {
-	ctx := context.Background()
-
-	conn, err = grpc.DialContext(ctx, "",
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithContextDialer(dialer(cs)),
-		grpc.WithBlock())
-
-	return conn, err
 }
 
 func tryConnect() *nats.Conn {

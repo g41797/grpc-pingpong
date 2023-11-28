@@ -115,3 +115,10 @@ https://github.com/juanmanuel-tirado/savetheworldwithgo
 Does a go-grpc server streaming method not have a context argument?
 https://stackoverflow.com/questions/76724124/does-a-go-grpc-server-streaming-method-not-have-a-context-argument
 
+How to solve pub-sub problem in go and grpc?
+https://stackoverflow.com/questions/69542965/how-to-solve-pub-sub-problem-in-go-and-grpc
+(also see below)
+
+grpc go : how to know in server side, when client closes the connection
+https://stackoverflow.com/questions/39825671/grpc-go-how-to-know-in-server-side-when-client-closes-the-connection
+

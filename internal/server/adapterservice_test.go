@@ -15,7 +15,10 @@ const (
 
 func TestAdapterService_CreateDestroyStation(t *testing.T) {
 
-	conn, err := startServerConnectClient(createGrpcServer)
+	server := CreateGrpcServer()
+	t.Cleanup(func() { server.Stop() })
+
+	conn, err := startServerConnectClient(server)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -30,7 +33,14 @@ func TestAdapterService_CreateDestroyStation(t *testing.T) {
 
 func TestAdapterService_Produce(t *testing.T) {
 
-	conn, err := startServerConnectClient(createGrpcServer)
+	server := CreateGrpcServer()
+	t.Cleanup(
+		func() {
+			server.Stop()
+		})
+
+	conn, err := startServerConnectClient(server)
+
 	if err != nil {
 		t.Fatal(err)
 	}
