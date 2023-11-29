@@ -51,3 +51,23 @@ func stopProduceRequest() *pb.ProduceMessages {
 
 	return request
 }
+
+func startConsumeRequest(sname, name string) *pb.ConsumeMessages {
+
+	station := &pb.Station{Name: sname}
+	consumer := &pb.Consumer{Name: name}
+	req := &pb.CreateConsumerRequest{Station: station, Consumer: consumer}
+	start := &pb.ConsumeMessages_Start{Start: req}
+
+	request := &pb.ConsumeMessages{Data: start}
+
+	return request
+}
+
+func stopConsumeRequest() *pb.ConsumeMessages {
+	stop := &pb.ConsumeMessages_Stop{Stop: &pb.Stop{}}
+
+	request := &pb.ConsumeMessages{Data: stop}
+
+	return request
+}

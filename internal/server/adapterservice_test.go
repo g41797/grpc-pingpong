@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+	"io"
+	"reflect"
 	"testing"
 
 	"githib.com/g41797/memphisgrpc/pb"
@@ -31,11 +33,15 @@ func TestAdapterService_CreateDestroyStation(t *testing.T) {
 	destroyStation(t, client, stName)
 }
 
-func TestAdapterService_Produce(t *testing.T) {
+var headersG = map[string]string{"1": "1", "2": "2"}
+var bodyG = []byte("first grpc produce")
+
+func TestAdapterService_ProduceConsume(t *testing.T) {
 
 	server := CreateGrpcServer()
 	t.Cleanup(
 		func() {
+
 			server.Stop()
 		})
 
@@ -54,6 +60,8 @@ func TestAdapterService_Produce(t *testing.T) {
 	t.Cleanup(func() { destroyStation(t, client, stName) })
 
 	produceToStation(t, client, stName, prodName)
+
+	consumeFromStation(t, client, stName, consName)
 }
 
 func createStation(t *testing.T, client pb.AdapterServiceClient, sname string) {
@@ -104,10 +112,7 @@ func produceToStation(t *testing.T, client pb.AdapterServiceClient, sname, pname
 		t.Errorf("Create producer error %v", err)
 	}
 
-	headers := map[string]string{"1": "1", "2": "2"}
-	body := []byte("first grpc produce")
-
-	produceMessage := produceRequest(headers, body)
+	produceMessage := produceRequest(headersG, bodyG)
 	err = pstr.Send(produceMessage)
 	if err != nil {
 		t.Errorf("Produce error %v", err)
@@ -127,4 +132,104 @@ func produceToStation(t *testing.T, client pb.AdapterServiceClient, sname, pname
 		t.Errorf("Failed produce status %s", status.GetText())
 	}
 
+}
+
+func consumeFromStation(t *testing.T, client pb.AdapterServiceClient, sname, name string) {
+	ctx := context.Background()
+
+	stream, err := client.Consume(ctx)
+	if err != nil {
+		t.Errorf("Consume error %v", err)
+	}
+
+	start := startConsumeRequest(sname, name)
+
+	err = stream.Send(start)
+	if err != nil {
+		t.Errorf("Create consumer error %v", err)
+	}
+
+	respmsg, _, err := skipWakeup(stream)
+	if err != nil {
+		t.Errorf("Recv consumed message error %v", err)
+	}
+
+	if respmsg == nil {
+		t.Errorf("Recv consumed error - expected message")
+	}
+
+	h := respmsg.GetHeaders()
+	if h == nil {
+		t.Errorf("Recv consumed error - expected headers")
+	}
+
+	headers := h.GetHeaders()
+	if headers == nil {
+		t.Errorf("Recv consumed error - expected map")
+	}
+
+	if !reflect.DeepEqual(headers, headersG) {
+		t.Errorf("Recv consumed headers mismatch")
+	}
+
+	body := respmsg.GetBody()
+	if body == nil {
+		t.Errorf("Recv consumed error - nil body")
+	}
+
+	if !reflect.DeepEqual(body, bodyG) {
+		t.Errorf("Recv consumed body mismatch")
+	}
+
+	stop := stopConsumeRequest()
+
+	err = stream.Send(stop)
+	if err != nil {
+		t.Errorf("Stop consume error %v", err)
+	}
+
+	_, respstat, err := skipWakeup(stream)
+	if err != nil {
+		t.Errorf("Recv consumed message error %v", err)
+	}
+	if respstat == nil {
+		t.Errorf("Recv consumed error - expected status")
+	}
+
+	text := respstat.GetText()
+	if len(text) != 0 {
+		t.Errorf("Recv status error - received status %s", text)
+	}
+
+	_, _, err = skipWakeup(stream)
+	if (err == io.EOF) || (err == nil) {
+		return
+	}
+
+	t.Errorf("Recv consumed error %v", err)
+}
+
+func skipWakeup(stream pb.AdapterService_ConsumeClient) (msg *pb.Msg, status *pb.Status, err error) {
+
+	for {
+
+		resp, err := stream.Recv()
+		if err != nil {
+			break
+		}
+
+		msg = resp.GetMsg()
+		if msg != nil {
+			break
+		}
+
+		status = resp.GetStatus()
+		if status != nil {
+			break
+		}
+
+		continue // for break
+	}
+
+	return
 }

@@ -18,11 +18,6 @@ message CreateConsumerRequest {
 	Consumer consumer = 2;
 }
 
-message DestroyConsumerRequest {
-	Station station = 1;
-	Consumer consumer = 2;
-}
-
 message ConsumeMessages {
 	oneof data {
 		CreateConsumerRequest start = 1;
@@ -30,9 +25,13 @@ message ConsumeMessages {
 	}
 }
 
+message Wakeup {}
+
+
 message ConsumeResponse {
 	oneof data {
 		Msg msg = 1;
-		Status error = 2;
+		Status status = 2;
+		Wakeup wakeup = 3;
 	};
 }
