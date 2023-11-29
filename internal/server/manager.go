@@ -95,6 +95,68 @@ func connCreateStation(conn *memphis.Conn, req *pb.CreateStationRequest) (*memph
 
 func stationOpts(req *pb.CreateStationRequest) ([]memphis.StationOpt, error) {
 	opts := make([]memphis.StationOpt, 0)
+
+	sopts := req.GetOptions()
+
+	if sopts == nil {
+		return opts, nil
+	}
+
+	s := sopts.GetStorage()
+	if s != nil {
+		storage := memphis.Disk
+		if s.StorageType == pb.StorageOpt_Memory {
+			storage = memphis.Memory
+		}
+		opts = append(opts, memphis.StorageTypeOpt(storage))
+	}
+
+	ret := sopts.GetRetention()
+	if ret != nil {
+		for {
+			m := ret.GetMmasret()
+			if m != nil {
+				sec := m.GetSeconds()
+				if sec > 0 {
+					opts = append(opts, memphis.RetentionTypeOpt(memphis.MaxMessageAgeSeconds))
+					opts = append(opts, memphis.RetentionVal(int(sec)))
+				}
+				break
+			}
+
+			mr := ret.GetMsgret()
+			if mr != nil {
+				msgs := int(mr.GetMessages())
+				if msgs > 0 {
+					opts = append(opts, memphis.RetentionTypeOpt(memphis.Messages))
+					opts = append(opts, memphis.RetentionVal(msgs))
+				}
+				break
+			}
+
+			br := ret.GetBret()
+			if br != nil {
+				bytrs := int(br.GetBytes())
+				if bytrs > 0 {
+					opts = append(opts, memphis.RetentionTypeOpt(memphis.Bytes))
+					opts = append(opts, memphis.RetentionVal(bytrs))
+				}
+				break
+			}
+
+			ar := ret.GetAbret()
+			if ar != nil {
+				abr := ar.AckBased
+				if abr {
+					opts = append(opts, memphis.RetentionTypeOpt(memphis.AckBased))
+					opts = append(opts, memphis.RetentionVal(0))
+				}
+				break
+			}
+			break
+		}
+	}
+
 	return opts, nil
 }
 

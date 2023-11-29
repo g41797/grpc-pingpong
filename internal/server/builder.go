@@ -8,8 +8,7 @@ func createStationRequest(sname string) (req *pb.CreateStationRequest) {
 	abret := &pb.RetentionOpt_Abret{Abret: &pb.AckBasedRet{AckBased: false}}
 	retopt := &pb.RetentionOpt{Retentions: abret}
 	stopt := &pb.StorageOpt{StorageType: pb.StorageOpt_Disk}
-	partopt := &pb.PartitionOpt{Number: 1}
-	sopts := &pb.StationOpions{Part: partopt, Storage: stopt, Retention: retopt}
+	sopts := &pb.StationOpions{Storage: stopt, Retention: retopt}
 
 	return &pb.CreateStationRequest{Station: station, Options: sopts}
 }

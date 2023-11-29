@@ -47,9 +47,8 @@ message PartitionOpt {
 }
 
 message StationOpions {
-    optional PartitionOpt part = 1;
-    optional StorageOpt storage = 2;
-    optional RetentionOpt retention = 3;
+    optional StorageOpt storage = 1;
+    optional RetentionOpt retention = 2;
 }
 
 message CreateStationRequest {
