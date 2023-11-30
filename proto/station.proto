@@ -20,10 +20,7 @@ message BytesRet {
     int32 bytes = 1;
 }
 
-message AckBasedRet {
-    bool ackBased = 1;
-}
-
+message AckBasedRet {}
 
 message RetentionOpt {
     oneof retentions {

@@ -5,8 +5,8 @@ import "githib.com/g41797/memphisgrpc/pb"
 func createStationRequest(sname string) (req *pb.CreateStationRequest) {
 
 	station := &pb.Station{Name: sname}
-	abret := &pb.RetentionOpt_Abret{Abret: &pb.AckBasedRet{AckBased: false}}
-	retopt := &pb.RetentionOpt{Retentions: abret}
+	mmret := &pb.RetentionOpt_Mmasret{Mmasret: &pb.MaxMessageAgeSecondsRet{Seconds: 3600}}
+	retopt := &pb.RetentionOpt{Retentions: mmret}
 	stopt := &pb.StorageOpt{StorageType: pb.StorageOpt_Disk}
 	sopts := &pb.StationOpions{Storage: stopt, Retention: retopt}
 

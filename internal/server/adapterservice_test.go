@@ -129,7 +129,7 @@ func produceToStation(t *testing.T, client pb.AdapterServiceClient, sname, pname
 	}
 
 	if len(status.GetText()) != 0 {
-		t.Errorf("Failed produce status %s", status.GetText())
+		t.Fatalf("Failed produce status %s", status.GetText())
 	}
 
 }

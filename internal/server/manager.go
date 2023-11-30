@@ -146,11 +146,8 @@ func stationOpts(req *pb.CreateStationRequest) ([]memphis.StationOpt, error) {
 
 			ar := ret.GetAbret()
 			if ar != nil {
-				abr := ar.AckBased
-				if abr {
-					opts = append(opts, memphis.RetentionTypeOpt(memphis.AckBased))
-					opts = append(opts, memphis.RetentionVal(0))
-				}
+				opts = append(opts, memphis.RetentionTypeOpt(memphis.AckBased))
+				opts = append(opts, memphis.RetentionVal(0))
 				break
 			}
 			break
