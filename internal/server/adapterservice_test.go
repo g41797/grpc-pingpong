@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"githib.com/g41797/memphisgrpc/pb"
+	"github.com/g41797/memphisgrpc/pb"
 )
 
 const (

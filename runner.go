@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	"githib.com/g41797/memphisgrpc/internal/server"
+	"github.com/g41797/memphisgrpc/internal/server"
 	"github.com/g41797/sputnik"
 	"google.golang.org/grpc"
 )

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package pb;
 
-option go_package = "githib.com/g41797/memphisgrpc;pb";
+option go_package = "github.com/g41797/memphisgrpc;pb";
 
 message Station {
     string name = 1;

@@ -1,4 +1,4 @@
-module githib.com/g41797/memphisgrpc
+module github.com/g41797/memphisgrpc
 
 go 1.19
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"githib.com/g41797/memphisgrpc/pb"
 	"github.com/g41797/kissngoqueue"
+	"github.com/g41797/memphisgrpc/pb"
 	"github.com/memphisdev/memphis.go"
 )
 

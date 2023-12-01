@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 
-	"githib.com/g41797/memphisgrpc/pb"
+	"github.com/g41797/memphisgrpc/pb"
 	"github.com/memphisdev/memphis.go"
 )
 
