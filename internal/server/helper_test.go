@@ -34,7 +34,22 @@ func PrepareTestEnvironment(embconf *embed.FS) (cleanFunc func(), err error) {
 	// Setup environment variables from env files
 	// Replaces vscode setting in launch.json file
 	// Reason - running tests in github without vscode
+	// see url of docker-compose.yml in test.env
 	err = sidecar.LoadEnv()
+	if err != nil {
+		return cleaner.Clean, err
+	}
+
+	// Get url of docker-compose.yml from environment
+	prefix := "TEST_"
+	base := "COMPOSEURL"
+	url := os.Getenv(prefix + base)
+	if len(url) == 0 {
+		url = os.Getenv(base)
+	}
+
+	// Download  docker-compose.yml to config folder
+	err = sidecar.LoadDockerComposeFile(url)
 	if err != nil {
 		return cleaner.Clean, err
 	}

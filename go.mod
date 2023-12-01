@@ -3,6 +3,7 @@ module githib.com/g41797/memphisgrpc
 go 1.19
 
 require (
+	github.com/g41797/kissngoqueue v0.1.5
 	github.com/g41797/sputnik v0.0.21
 	github.com/memphisdev/memphis.go v1.1.4
 	github.com/nats-io/nats.go v1.31.0
@@ -13,7 +14,6 @@ require (
 require (
 	github.com/g41797/godotenv v1.5.3 // indirect
 	github.com/g41797/gonfig v1.0.1 // indirect
-	github.com/g41797/kissngoqueue v0.1.5 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
