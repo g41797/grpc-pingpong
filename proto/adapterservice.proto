@@ -4,6 +4,9 @@ package pb;
 
 option go_package = "github.com/g41797/memphisgrpc;pb";
 
+option php_namespace = "g4197\\memphisphp\\pb";
+option php_metadata_namespace = "g4197\\memphisphp\\metadata";
+
 import "status.proto";
 import "station.proto";
 import "producer.proto";
