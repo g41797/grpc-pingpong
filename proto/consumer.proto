@@ -28,13 +28,9 @@ message ConsumeMessages {
 	}
 }
 
-message Wakeup {}
-
-
 message ConsumeResponse {
 	oneof data {
-		Msg msg = 1;
+		Messages messages = 1;
 		Status status = 2;
-		Wakeup wakeup = 3;
 	};
 }

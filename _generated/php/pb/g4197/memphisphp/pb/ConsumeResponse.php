@@ -21,9 +21,8 @@ class ConsumeResponse extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type \g4197\memphisphp\pb\Msg $msg
+     *     @type \g4197\memphisphp\pb\Messages $messages
      *     @type \g4197\memphisphp\pb\Status $status
-     *     @type \g4197\memphisphp\pb\Wakeup $wakeup
      * }
      */
     public function __construct($data = NULL) {
@@ -32,27 +31,27 @@ class ConsumeResponse extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>.pb.Msg msg = 1;</code>
-     * @return \g4197\memphisphp\pb\Msg|null
+     * Generated from protobuf field <code>.pb.Messages messages = 1;</code>
+     * @return \g4197\memphisphp\pb\Messages|null
      */
-    public function getMsg()
+    public function getMessages()
     {
         return $this->readOneof(1);
     }
 
-    public function hasMsg()
+    public function hasMessages()
     {
         return $this->hasOneof(1);
     }
 
     /**
-     * Generated from protobuf field <code>.pb.Msg msg = 1;</code>
-     * @param \g4197\memphisphp\pb\Msg $var
+     * Generated from protobuf field <code>.pb.Messages messages = 1;</code>
+     * @param \g4197\memphisphp\pb\Messages $var
      * @return $this
      */
-    public function setMsg($var)
+    public function setMessages($var)
     {
-        GPBUtil::checkMessage($var, \g4197\memphisphp\pb\Msg::class);
+        GPBUtil::checkMessage($var, \g4197\memphisphp\pb\Messages::class);
         $this->writeOneof(1, $var);
 
         return $this;
@@ -81,33 +80,6 @@ class ConsumeResponse extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkMessage($var, \g4197\memphisphp\pb\Status::class);
         $this->writeOneof(2, $var);
-
-        return $this;
-    }
-
-    /**
-     * Generated from protobuf field <code>.pb.Wakeup wakeup = 3;</code>
-     * @return \g4197\memphisphp\pb\Wakeup|null
-     */
-    public function getWakeup()
-    {
-        return $this->readOneof(3);
-    }
-
-    public function hasWakeup()
-    {
-        return $this->hasOneof(3);
-    }
-
-    /**
-     * Generated from protobuf field <code>.pb.Wakeup wakeup = 3;</code>
-     * @param \g4197\memphisphp\pb\Wakeup $var
-     * @return $this
-     */
-    public function setWakeup($var)
-    {
-        GPBUtil::checkMessage($var, \g4197\memphisphp\pb\Wakeup::class);
-        $this->writeOneof(3, $var);
 
         return $this;
     }

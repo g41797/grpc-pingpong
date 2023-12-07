@@ -149,7 +149,7 @@ func consumeFromStation(t *testing.T, client pb.AdapterServiceClient, sname, nam
 		t.Errorf("Create consumer error %v", err)
 	}
 
-	respmsg, _, err := skipWakeup(stream)
+	respmsg, _, err := skipEmpty(stream)
 	if err != nil {
 		t.Errorf("Recv consumed message error %v", err)
 	}
@@ -188,7 +188,7 @@ func consumeFromStation(t *testing.T, client pb.AdapterServiceClient, sname, nam
 		t.Errorf("Stop consume error %v", err)
 	}
 
-	_, respstat, err := skipWakeup(stream)
+	_, respstat, err := skipEmpty(stream)
 	if err != nil {
 		t.Errorf("Recv consumed message error %v", err)
 	}
@@ -201,7 +201,7 @@ func consumeFromStation(t *testing.T, client pb.AdapterServiceClient, sname, nam
 		t.Errorf("Recv status error - received status %s", text)
 	}
 
-	_, _, err = skipWakeup(stream)
+	_, _, err = skipEmpty(stream)
 	if (err == io.EOF) || (err == nil) {
 		return
 	}
@@ -209,7 +209,7 @@ func consumeFromStation(t *testing.T, client pb.AdapterServiceClient, sname, nam
 	t.Errorf("Recv consumed error %v", err)
 }
 
-func skipWakeup(stream pb.AdapterService_ConsumeClient) (msg *pb.Msg, status *pb.Status, err error) {
+func skipEmpty(stream pb.AdapterService_ConsumeClient) (msg *pb.Msg, status *pb.Status, err error) {
 
 	for {
 
@@ -218,8 +218,12 @@ func skipWakeup(stream pb.AdapterService_ConsumeClient) (msg *pb.Msg, status *pb
 			break
 		}
 
-		msg = resp.GetMsg()
-		if msg != nil {
+		msgs := resp.GetMessages()
+		if msgs != nil {
+			if len(msgs.Msg) == 0 {
+				continue
+			}
+			msg = msgs.Msg[0]
 			break
 		}
 

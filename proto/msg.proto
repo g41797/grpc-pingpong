@@ -15,3 +15,7 @@ message Msg {
 	optional Headers headers = 1;
 	optional bytes body = 2;
 }
+
+message Messages {
+	repeated Msg msg = 1;
+}

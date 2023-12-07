@@ -1,6 +1,8 @@
 package server
 
 import (
+	"time"
+
 	"github.com/g41797/sputnik/sidecar"
 	"github.com/memphisdev/memphis.go"
 )
@@ -28,7 +30,7 @@ func newBrokerConnector() (bc *brokerConnector, err error) {
 
 func (bc *brokerConnector) connect() (*memphis.Conn, error) {
 
-	mc, err := memphis.Connect(bc.cnf.BROKER_HOST, bc.cnf.BROKER_USER, memphis.Password(bc.cnf.BROKER_PSWRD))
+	mc, err := memphis.Connect(bc.cnf.BROKER_HOST, bc.cnf.BROKER_USER, memphis.Password(bc.cnf.BROKER_PSWRD), memphis.Timeout(time.Second*20))
 
 	return mc, err
 }

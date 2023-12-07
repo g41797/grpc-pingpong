@@ -20,8 +20,6 @@ type consumer struct {
 	done    chan struct{}
 }
 
-type wakeup struct{}
-
 func newConsumer(bc *brokerConnector) *consumer {
 	consumer := new(consumer)
 	consumer.bc = bc
@@ -122,13 +120,9 @@ func (srv *consumer) processMessages(msgs []*memphis.Msg, err error, ctx context
 	}
 
 	if msgs == nil {
-		srv.q.PutMT(wakeup{})
-		return
+		msgs = make([]*memphis.Msg, 0)
 	}
-
-	for _, msg := range msgs {
-		srv.q.PutMT(msg)
-	}
+	srv.q.PutMT(msgs)
 	return
 }
 
@@ -143,23 +137,27 @@ func (srv *consumer) send() {
 			break
 		}
 
-		msg, ok := m.(*memphis.Msg)
+		msgs, ok := m.([]*memphis.Msg)
 		if ok {
-			headers := &pb.Headers{Headers: msg.GetHeaders()}
-			respmsg := &pb.ConsumeResponse_Msg{Msg: &pb.Msg{Headers: headers, Body: msg.Data()}}
-			resp := &pb.ConsumeResponse{Data: respmsg}
+			cresp := pb.ConsumeResponse_Messages{}
+			cresp.Messages = &pb.Messages{}
+			resp := &pb.ConsumeResponse{Data: &cresp}
+
+			for _, msg := range msgs {
+				headers := &pb.Headers{Headers: msg.GetHeaders()}
+				cmsg := &pb.Msg{Headers: headers, Body: msg.Data()}
+				cresp.Messages.Msg = append(cresp.Messages.Msg, cmsg)
+			}
+
 			err := srv.stream.Send(resp)
 			if err != nil {
 				break
 			}
-			msg.Ack()
-			continue
-		}
 
-		_, ok = m.(wakeup)
-		if ok {
-			resp := &pb.ConsumeResponse{Data: &pb.ConsumeResponse_Wakeup{Wakeup: &pb.Wakeup{}}}
-			_ = srv.stream.Send(resp)
+			for _, m := range msgs {
+				m.Ack()
+			}
+
 			continue
 		}
 
