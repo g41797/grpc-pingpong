@@ -4,8 +4,8 @@ package pb;
 
 option go_package = "github.com/g41797/memphisgrpc;pb";
 
-option php_namespace = "g4197\\memphisphp\\pb";
-option php_metadata_namespace = "g4197\\memphisphp\\metadata";
+option php_namespace = "Memphisphp\\Pb";
+option php_metadata_namespace = "Memphisphp\\Metadata";
 
 message Headers {
 	map<string,string> headers = 1;
