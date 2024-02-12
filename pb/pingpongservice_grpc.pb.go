@@ -72,21 +72,19 @@ func (x *pingPongServicePlayClient) Recv() (*Ball, error) {
 }
 
 // PingPongServiceServer is the server API for PingPongService service.
-// All implementations must embed UnimplementedPingPongServiceServer
+// All implementations should embed UnimplementedPingPongServiceServer
 // for forward compatibility
 type PingPongServiceServer interface {
 	Play(PingPongService_PlayServer) error
-	mustEmbedUnimplementedPingPongServiceServer()
 }
 
-// UnimplementedPingPongServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedPingPongServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedPingPongServiceServer struct {
 }
 
 func (UnimplementedPingPongServiceServer) Play(PingPongService_PlayServer) error {
 	return status.Errorf(codes.Unimplemented, "method Play not implemented")
 }
-func (UnimplementedPingPongServiceServer) mustEmbedUnimplementedPingPongServiceServer() {}
 
 // UnsafePingPongServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to PingPongServiceServer will

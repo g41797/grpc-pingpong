@@ -127,17 +127,16 @@ func (x *adapterServiceConsumeClient) Recv() (*ConsumeResponse, error) {
 }
 
 // AdapterServiceServer is the server API for AdapterService service.
-// All implementations must embed UnimplementedAdapterServiceServer
+// All implementations should embed UnimplementedAdapterServiceServer
 // for forward compatibility
 type AdapterServiceServer interface {
 	CreateStation(context.Context, *CreateStationRequest) (*Status, error)
 	DestroyStation(context.Context, *DestroyStationRequest) (*Status, error)
 	Produce(AdapterService_ProduceServer) error
 	Consume(AdapterService_ConsumeServer) error
-	mustEmbedUnimplementedAdapterServiceServer()
 }
 
-// UnimplementedAdapterServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedAdapterServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedAdapterServiceServer struct {
 }
 
@@ -153,7 +152,6 @@ func (UnimplementedAdapterServiceServer) Produce(AdapterService_ProduceServer) e
 func (UnimplementedAdapterServiceServer) Consume(AdapterService_ConsumeServer) error {
 	return status.Errorf(codes.Unimplemented, "method Consume not implemented")
 }
-func (UnimplementedAdapterServiceServer) mustEmbedUnimplementedAdapterServiceServer() {}
 
 // UnsafeAdapterServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to AdapterServiceServer will
