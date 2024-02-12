@@ -1,6 +1,6 @@
-module github.com/g41797/memphisgrpc
+module github.com/g41797/grpc-pingpong
 
-go 1.19
+go 1.20
 
 require (
 	github.com/g41797/kissngoqueue v0.1.5

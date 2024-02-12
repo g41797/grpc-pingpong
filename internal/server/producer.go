@@ -3,7 +3,7 @@ package server
 import (
 	"io"
 
-	"github.com/g41797/memphisgrpc/pb"
+	"github.com/g41797/grpc-pingpong/pb"
 	"github.com/memphisdev/memphis.go"
 )
 

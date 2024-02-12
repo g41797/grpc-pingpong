@@ -1,0 +1,21 @@
+// Copyright (c) 2024 g41797
+// SPDX-License-Identifier: MIT
+
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/g41797/grpc-pingpong;pb";
+
+message Part {
+    string name = 1;
+    bytes content = 2;
+}
+
+message Ball {
+    repeated Part parts = 1;
+}
+
+service PingPongService {
+	rpc Play(stream Ball) returns (stream Ball) {}
+}

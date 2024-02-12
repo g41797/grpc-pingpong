@@ -1,6 +1,6 @@
 package server
 
-import "github.com/g41797/memphisgrpc/pb"
+import "github.com/g41797/grpc-pingpong/pb"
 
 func createStationRequest(sname string) (req *pb.CreateStationRequest) {
 

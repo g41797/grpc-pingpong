@@ -1,5 +1,3 @@
-# memphisgrpc [![Go](https://github.com/g41797/memphisgrpc/actions/workflows/go.yml/badge.svg)](https://github.com/g41797/memphisgrpc/actions/workflows/go.yml)
+# grpc-pingpong [![Go](https://github.com/g41797/grpc-pingpong/actions/workflows/go.yml/badge.svg)](https://github.com/g41797/grpc-pingpong/actions/workflows/go.yml)
 
-gRPC go-based adapter for [Memphis broker](https://memphis.dev)
-
-[Short description](https://github.com/memphisdev/memphis/issues/1140#issuecomment-1811912526)
+Generic "full-duplex" grpc based client/server.

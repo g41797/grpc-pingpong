@@ -1,10 +1,10 @@
-package memphisgrpc
+package grpcpingpong
 
 import (
 	"fmt"
 	"net"
 
-	"github.com/g41797/memphisgrpc/internal/server"
+	"github.com/g41797/grpc-pingpong/internal/server"
 	"github.com/g41797/sputnik"
 	"google.golang.org/grpc"
 )
