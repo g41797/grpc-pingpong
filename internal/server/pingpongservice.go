@@ -4,6 +4,8 @@
 package server
 
 import (
+	"context"
+
 	"github.com/g41797/grpc-pingpong/pb"
 	"google.golang.org/grpc"
 )
@@ -11,15 +13,14 @@ import (
 var _ pb.PingPongServiceServer = (*PingPongService)(nil)
 
 type PingPongService struct {
-	pb.UnimplementedPingPongServiceServer
 }
 
-func CreatePingPongServer() *grpc.Server {
+func CreateGrpcPingPongServer() *grpc.Server {
 	server := grpc.NewServer()
 	pb.RegisterPingPongServiceServer(server, &PingPongService{})
 	return server
 }
 
-func (srv *PingPongService) Play(p pb.PingPongService_PlayServer) error {
-	return nil
+func (srv *PingPongService) Play(ctx context.Context, b *pb.Ball) (*pb.Ball, error) {
+	return nil, nil
 }

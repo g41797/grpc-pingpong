@@ -29,7 +29,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PingPongServiceClient interface {
-	Play(ctx context.Context, opts ...grpc.CallOption) (PingPongService_PlayClient, error)
+	Play(ctx context.Context, in *Ball, opts ...grpc.CallOption) (*Ball, error)
 }
 
 type pingPongServiceClient struct {
@@ -40,50 +40,28 @@ func NewPingPongServiceClient(cc grpc.ClientConnInterface) PingPongServiceClient
 	return &pingPongServiceClient{cc}
 }
 
-func (c *pingPongServiceClient) Play(ctx context.Context, opts ...grpc.CallOption) (PingPongService_PlayClient, error) {
-	stream, err := c.cc.NewStream(ctx, &PingPongService_ServiceDesc.Streams[0], PingPongService_Play_FullMethodName, opts...)
+func (c *pingPongServiceClient) Play(ctx context.Context, in *Ball, opts ...grpc.CallOption) (*Ball, error) {
+	out := new(Ball)
+	err := c.cc.Invoke(ctx, PingPongService_Play_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &pingPongServicePlayClient{stream}
-	return x, nil
-}
-
-type PingPongService_PlayClient interface {
-	Send(*Ball) error
-	Recv() (*Ball, error)
-	grpc.ClientStream
-}
-
-type pingPongServicePlayClient struct {
-	grpc.ClientStream
-}
-
-func (x *pingPongServicePlayClient) Send(m *Ball) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *pingPongServicePlayClient) Recv() (*Ball, error) {
-	m := new(Ball)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // PingPongServiceServer is the server API for PingPongService service.
 // All implementations should embed UnimplementedPingPongServiceServer
 // for forward compatibility
 type PingPongServiceServer interface {
-	Play(PingPongService_PlayServer) error
+	Play(context.Context, *Ball) (*Ball, error)
 }
 
 // UnimplementedPingPongServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedPingPongServiceServer struct {
 }
 
-func (UnimplementedPingPongServiceServer) Play(PingPongService_PlayServer) error {
-	return status.Errorf(codes.Unimplemented, "method Play not implemented")
+func (UnimplementedPingPongServiceServer) Play(context.Context, *Ball) (*Ball, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Play not implemented")
 }
 
 // UnsafePingPongServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -97,30 +75,22 @@ func RegisterPingPongServiceServer(s grpc.ServiceRegistrar, srv PingPongServiceS
 	s.RegisterService(&PingPongService_ServiceDesc, srv)
 }
 
-func _PingPongService_Play_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(PingPongServiceServer).Play(&pingPongServicePlayServer{stream})
-}
-
-type PingPongService_PlayServer interface {
-	Send(*Ball) error
-	Recv() (*Ball, error)
-	grpc.ServerStream
-}
-
-type pingPongServicePlayServer struct {
-	grpc.ServerStream
-}
-
-func (x *pingPongServicePlayServer) Send(m *Ball) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *pingPongServicePlayServer) Recv() (*Ball, error) {
-	m := new(Ball)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
+func _PingPongService_Play_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Ball)
+	if err := dec(in); err != nil {
 		return nil, err
 	}
-	return m, nil
+	if interceptor == nil {
+		return srv.(PingPongServiceServer).Play(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PingPongService_Play_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PingPongServiceServer).Play(ctx, req.(*Ball))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 // PingPongService_ServiceDesc is the grpc.ServiceDesc for PingPongService service.
@@ -129,14 +99,12 @@ func (x *pingPongServicePlayServer) Recv() (*Ball, error) {
 var PingPongService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "pb.PingPongService",
 	HandlerType: (*PingPongServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
+	Methods: []grpc.MethodDesc{
 		{
-			StreamName:    "Play",
-			Handler:       _PingPongService_Play_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
+			MethodName: "Play",
+			Handler:    _PingPongService_Play_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "pingpongservice.proto",
 }

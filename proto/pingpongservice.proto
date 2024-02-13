@@ -18,5 +18,5 @@ message Ball {
 }
 
 service PingPongService {
-	rpc Play(stream Ball) returns (stream Ball) {}
+	rpc Play(Ball) returns (Ball) {}
 }
