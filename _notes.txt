@@ -1,3 +1,15 @@
+
+Extensive tutorial on go-plugin.
+https://skarlso.github.io/2018/10/29/go-plugin-tutorial/
+
+Hashicorp Plugin System Design and Implementation
+https://zerofruit-web3.medium.com/hashicorp-plugin-system-design-and-implementation-5f939f09e3b3
+
+RPC-based plugins in Go
+https://eli.thegreenplace.net/2023/rpc-based-plugins-in-go/
+
+
+
 How to Use Context in Golang (Deadlines, Cancellation, and Passing Values)
 https://www.sohamkamani.com/golang/context/
 
@@ -9,19 +21,6 @@ Context Package Semantics In Go
 https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html
 
 
-Testing Cluster API
-https://cluster-api.sigs.k8s.io/developer/testing.html
-
-Guide to Testing
-https://blog.jetbrains.com/go/2022/11/22/comprehensive-guide-to-testing-in-go/
-
-Clean Tests Using t.Cleanup
-https://ieftimov.com/posts/testing-in-go-clean-tests-using-t-cleanup/
-
-
-Using Setup and Teardown in Golang's Tests:
-https://www.sobyte.net/post/2022-07/go-setup-and-teardown/
-
 
 Go blog
 https://www.inanzzz.com/index.php/home
@@ -30,94 +29,12 @@ Unit testing Golang gRPC client and server application with bufconn package
 https://www.inanzzz.com/index.php/post/w9qr/unit-testing-golang-grpc-client-and-server-application-with-bufconn-package
 
 
-Using gRPC with Golang
-https://speedscale.com/blog/using-grpc-with-golang/#elementor-toc__heading-anchor-2
-https://github.com/xNok/go-grpc-demo
-
-
-Creating gRPC interceptors
-https://dev.to/davidsbond/golang-creating-grpc-interceptors-5el5
-
-
-Protobuf and Go: Handling Oneof Field type
-https://software-factotum.medium.com/protobuf-and-go-handling-oneof-field-type-172ca780ec47
-
-
-Build gRPC Server API & Client with Golang and MongoDB
-https://github.com/wpcodevo/golang-mongodb-api
-https://codevoweb.com/api-golang-mongodb-gin-gonic-project-setup/
-
-
-Build Golang gRPC Server and Client: Access & Refresh Tokens
-https://codevoweb.com/golang-grpc-server-and-client-access-refresh-tokens/
-
-
 Install grpc staff
 sudo dnf install golang-github-protobuf-devel
 
 Fix protoc-gen-go-grpc problem
 https://stackoverflow.com/questions/60578892/protoc-gen-go-grpc-program-not-found-or-is-not-executable
 https://askgolang.com/how-to-fix-protoc-gen-go-grpc-program-not-found-or-is-not-executable/
-
-
-The complete gRPC course
-https://dev.to/techschoolguru/series/7311
-https://github.com/techschool/pcbook-go
-
-
-awesome-grpc
-https://github.com/grpc-ecosystem/awesome-grpc
-
-goKIT
-https://pkg.go.dev/github.com/shijuvar/gokit
-
-gRPC-Go-for-Professional
-https://github.com/PacktPublishing/gRPC-Go-for-Professionals
-
-dapr Proto
-https://github.com/dapr/dapr/tree/master/dapr#readme
-
-ProtoActor
-https://github.com/asynkron/protoactor-go/tree/dev/remote
-
-ResoourceOriented grpc
-https://youtu.be/9dBMPrwtGAQ?t=796
-
-Go SDK for implementing resource-oriented gRPC APIs
-https://github.com/einride/aip-go/tree/master
-
-Resource-oriented design
-https://google.aip.dev/121
-
-Implement client-server session
-https://groups.google.com/g/grpc-io/c/ODXWewW32cg
-
-RPC life cycle
-https://grpc.io/docs/what-is-grpc/core-concepts/
-
-gRPC Long-lived Streaming
-https://dev.bitolog.com/grpc-long-lived-streaming/
-https://github.com/omri86/longlived-grpc
-
-nRPC is like gRPC, but over NATS
-https://github.com/nats-rpc/nrpc
-
-Generate .proto files from Go source code
- https://github.com/src-d/proteus
- https://github.com/anjmao/go2proto
-
-gRPC - Up and Running
-https://github.com/grpc-up-and-running
-
-BUILD SYSTEMS with GO
-https://github.com/juanmanuel-tirado/savetheworldwithgo
-
-Does a go-grpc server streaming method not have a context argument?
-https://stackoverflow.com/questions/76724124/does-a-go-grpc-server-streaming-method-not-have-a-context-argument
-
-How to solve pub-sub problem in go and grpc?
-https://stackoverflow.com/questions/69542965/how-to-solve-pub-sub-problem-in-go-and-grpc
-(also see below)
 
 grpc go : how to know in server side, when client closes the connection
 https://stackoverflow.com/questions/39825671/grpc-go-how-to-know-in-server-side-when-client-closes-the-connection

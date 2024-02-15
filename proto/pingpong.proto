@@ -7,16 +7,17 @@ package pb;
 
 option go_package = "github.com/g41797/grpc-pingpong;pb";
 
-message Part {
-    string name = 1;
-    optional bytes content = 2;
-    optional string text = 3;
-}
 
 message Ball {
-    repeated Part parts = 1;
+    message Meta {
+        string Key = 1;
+        string Value = 2;
+    }
+    string Player = 1;
+    repeated Meta Metas = 2;
+    bytes Raw = 3;
 }
 
-service PingPongService {
+service PingPong {
 	rpc Play(Ball) returns (Ball) {}
 }
