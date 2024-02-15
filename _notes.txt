@@ -9,6 +9,13 @@ RPC-based plugins in Go
 https://eli.thegreenplace.net/2023/rpc-based-plugins-in-go/
 
 
+Stream proto
+https://github.com/hashicorp/nomad/blob/main/drivers/shared/executor/proto/executor.proto
+https://github.com/hashicorp/nomad/blob/main/drivers/shared/executor/executor.go
+
+Standalone
+https://github.com/grafana/grafana-plugin-sdk-go/tree/main/internal/standalone
+
 
 How to Use Context in Golang (Deadlines, Cancellation, and Passing Values)
 https://www.sohamkamani.com/golang/context/
