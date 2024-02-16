@@ -16,13 +16,6 @@ type PingPong interface {
 	Play(ctx context.Context, b *Ball) (*Ball, error)
 }
 
-// This is the implementation of plugin.Plugin so we can serve/consume this.
-type PingPongPlugin struct {
-	// Concrete implementation, written in Go. This is only used for plugins
-	// that are written in Go.
-	Impl PingPong
-}
-
 // This is the implementation of plugin.GRPCPlugin so we can serve/consume this.
 type PingPongGRPCPlugin struct {
 	// GRPCPlugin must still implement the Plugin interface
