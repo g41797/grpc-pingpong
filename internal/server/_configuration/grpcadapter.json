@@ -1,4 +1,0 @@
-{
-    "LISTEN_NETWORK": "tcp4",
-    "LISTEN_ADDRESS": "127.0.0.1"
-}

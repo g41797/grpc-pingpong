@@ -39,6 +39,8 @@ func RunClient() {
 		fmt.Printf("expected %s actual %s", b.Player, res.Player)
 		return
 	}
+
+	return
 }
 
 var _ shared.PingPong = (*Client)(nil)
