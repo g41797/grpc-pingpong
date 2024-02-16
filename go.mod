@@ -7,6 +7,7 @@ require (
 	github.com/g41797/sputnik v0.0.21
 	github.com/hashicorp/go-plugin v1.6.0
 	github.com/memphisdev/memphis.go v1.1.4
+	github.com/mitchellh/go-ps v1.0.0
 	github.com/nats-io/nats.go v1.31.0
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0

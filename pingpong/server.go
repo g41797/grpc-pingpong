@@ -1,7 +1,7 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package plugin
+package pingpong
 
 import (
 	"context"
@@ -10,16 +10,21 @@ import (
 	"github.com/hashicorp/go-plugin"
 )
 
-var _ shared.PingPong = (*pingPongServer)(nil)
+func RunServer() {
+	srv := Server{}
+	srv.Run()
+}
 
-type pingPongServer struct{}
+var _ shared.PingPong = (*Server)(nil)
 
-func (s *pingPongServer) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
+type Server struct{}
+
+func (s *Server) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
 	// TODO: Add real implementation
 	return b, nil
 }
 
-func (s *pingPongServer) Run() {
+func (s *Server) Run() {
 
 	plugin.Serve(&plugin.ServeConfig{
 		HandshakeConfig: shared.Handshake,
