@@ -7,17 +7,19 @@ import (
 	"context"
 
 	"github.com/g41797/grpc-pingpong/shared"
+	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 )
 
-func RunServer() {
-	srv := Server{}
-	srv.Run()
-}
-
 var _ shared.PingPong = (*Server)(nil)
 
-type Server struct{}
+type Server struct {
+	level hclog.Level
+}
+
+func NewServer(trl hclog.Level) *Server {
+	return &Server{level: trl}
+}
 
 func (s *Server) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
 	// TODO: Add real implementation
@@ -34,6 +36,11 @@ func (s *Server) Run() {
 
 		// A non-nil value here enables gRPC serving for this plugin...
 		GRPCServer: plugin.DefaultGRPCServer,
+		Logger: hclog.New(&hclog.LoggerOptions{
+			Output: hclog.DefaultOutput,
+			Level:  s.level,
+			Name:   ownExeName() + "_plugin",
+		}),
 	})
 
 }

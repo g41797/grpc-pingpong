@@ -10,44 +10,35 @@ import (
 	"os/exec"
 
 	"github.com/g41797/grpc-pingpong/shared"
+	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	"github.com/mitchellh/go-ps"
 )
 
-func IsPluginProcess() bool {
-
+func ownExeName() string {
 	proc, _ := ps.FindProcess(os.Getpid())
-	pproc, _ := ps.FindProcess(os.Getppid())
-
-	return proc.Executable() == pproc.Executable()
+	return proc.Executable()
 }
 
-func RunClient() {
+func parentExeName() string {
+	proc, _ := ps.FindProcess(os.Getppid())
+	return proc.Executable()
+}
 
-	pcl := Client{}
-	defer pcl.Clean()
-
-	b := shared.Ball{Player: "noname"}
-
-	res, err := pcl.Play(context.Background(), &b)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	if res.Player != b.Player {
-		fmt.Printf("expected %s actual %s", b.Player, res.Player)
-		return
-	}
-
-	return
+func IsPluginProcess() bool {
+	return ownExeName() == parentExeName()
 }
 
 var _ shared.PingPong = (*Client)(nil)
 
 type Client struct {
+	level   hclog.Level
 	cleanup func()
 	impl    shared.PingPong
+}
+
+func NewClient(trl hclog.Level) *Client {
+	return &Client{level: trl}
 }
 
 func (s *Client) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
@@ -86,6 +77,11 @@ func (s *Client) run() error {
 		Cmd:             exec.Command(os.Args[0]),
 		AllowedProtocols: []plugin.Protocol{
 			plugin.ProtocolGRPC},
+		Logger: hclog.New(&hclog.LoggerOptions{
+			Output: hclog.DefaultOutput,
+			Level:  s.level,
+			Name:   ownExeName() + "_client",
+		}),
 	})
 
 	clean := client.Kill
