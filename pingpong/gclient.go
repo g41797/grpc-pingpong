@@ -10,7 +10,6 @@ import (
 	"os/exec"
 
 	"github.com/g41797/grpc-pingpong/internal"
-	_ "github.com/g41797/grpc-pingpong/internal"
 	"github.com/g41797/grpc-pingpong/shared"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
@@ -31,20 +30,20 @@ func IsPluginProcess() bool {
 	return ownExeName() == parentExeName()
 }
 
-var _ shared.PingPong = (*client)(nil)
+var _ shared.PingPong = (*gclient)(nil)
 
-type client struct {
+type gclient struct {
 	level   hclog.Level
 	cleanup func()
 	impl    shared.PingPong
 }
 
 func NewGame(trl hclog.Level) (shared.PingPong, func()) {
-	result := &client{level: trl}
+	result := &gclient{level: trl}
 	return result, result.Clean
 }
 
-func (s *client) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
+func (s *gclient) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
 
 	if err := s.run(); err != nil {
 		return nil, err
@@ -53,7 +52,7 @@ func (s *client) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error)
 	return s.impl.Play(ctx, b)
 }
 
-func (s *client) Clean() {
+func (s *gclient) Clean() {
 	if s == nil {
 		return
 	}
@@ -65,7 +64,7 @@ func (s *client) Clean() {
 	s.impl = nil
 }
 
-func (s *client) run() error {
+func (s *gclient) run() error {
 	if s == nil {
 		return fmt.Errorf("nil client")
 	}

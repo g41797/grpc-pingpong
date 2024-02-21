@@ -12,22 +12,22 @@ import (
 	"github.com/hashicorp/go-plugin"
 )
 
-var _ shared.PingPong = (*server)(nil)
+var _ shared.PingPong = (*gserver)(nil)
 
-type server struct {
+type gserver struct {
 	level hclog.Level
 }
 
-func NewServer(trl hclog.Level) *server {
-	return &server{level: trl}
+func NewServer(trl hclog.Level) *gserver {
+	return &gserver{level: trl}
 }
 
-func (s *server) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
+func (s *gserver) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
 	// TODO: Add real implementation
 	return b, nil
 }
 
-func (s *server) Run() {
+func (s *gserver) Run() {
 
 	plugin.Serve(&plugin.ServeConfig{
 		HandshakeConfig: internal.Handshake,
