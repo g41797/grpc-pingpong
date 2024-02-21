@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/g41797/grpc-pingpong/pb"
+	"github.com/g41797/grpc-pingpong/internal/pb"
 	"github.com/g41797/grpc-pingpong/shared"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
