@@ -12,12 +12,12 @@ type PingPong interface {
 	Play(ctx context.Context, b *Ball) (*Ball, error)
 }
 
-// PingPongHandler - interface of server part
-type PingPongHandler interface {
+// PingPongPlayer - interface of server part
+type PingPongPlayer interface {
 	InitOnce(config []byte) error
 	PingPong
 	FinishOnce() error
 }
 
-// Creator of PingPongHandler implementation "object"
-type PingPongHandlerFactory func() (PingPongHandler, error)
+// Creator of PingPongPlayer implementation "object"
+type PingPongPlayerFactory func() (PingPongPlayer, error)

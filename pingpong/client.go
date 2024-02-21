@@ -9,6 +9,8 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/g41797/grpc-pingpong/internal"
+	_ "github.com/g41797/grpc-pingpong/internal"
 	"github.com/g41797/grpc-pingpong/shared"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
@@ -29,19 +31,20 @@ func IsPluginProcess() bool {
 	return ownExeName() == parentExeName()
 }
 
-var _ shared.PingPong = (*Client)(nil)
+var _ shared.PingPong = (*client)(nil)
 
-type Client struct {
+type client struct {
 	level   hclog.Level
 	cleanup func()
 	impl    shared.PingPong
 }
 
-func NewClient(trl hclog.Level) *Client {
-	return &Client{level: trl}
+func NewGame(trl hclog.Level) (shared.PingPong, func()) {
+	result := &client{level: trl}
+	return result, result.Clean
 }
 
-func (s *Client) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
+func (s *client) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
 
 	if err := s.run(); err != nil {
 		return nil, err
@@ -50,7 +53,7 @@ func (s *Client) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error)
 	return s.impl.Play(ctx, b)
 }
 
-func (s *Client) Clean() {
+func (s *client) Clean() {
 	if s == nil {
 		return
 	}
@@ -62,7 +65,7 @@ func (s *Client) Clean() {
 	s.impl = nil
 }
 
-func (s *Client) run() error {
+func (s *client) run() error {
 	if s == nil {
 		return fmt.Errorf("nil client")
 	}
@@ -72,9 +75,9 @@ func (s *Client) run() error {
 	}
 
 	client := plugin.NewClient(&plugin.ClientConfig{
-		HandshakeConfig: shared.Handshake,
-		Plugins:         shared.PluginMap,
-		Cmd:             exec.Command(os.Args[0]),
+		HandshakeConfig: internal.Handshake,
+		Plugins:         internal.PluginMap,
+		Cmd:             exec.Command(os.Args[0], os.Args[1:]...),
 		AllowedProtocols: []plugin.Protocol{
 			plugin.ProtocolGRPC},
 		Logger: hclog.New(&hclog.LoggerOptions{
@@ -93,7 +96,7 @@ func (s *Client) run() error {
 	}
 
 	// Request the plugin
-	raw, err := rpcClient.Dispense(shared.PingPongPluginName)
+	raw, err := rpcClient.Dispense(internal.PingPongPluginName)
 	if err != nil {
 		return err
 	}

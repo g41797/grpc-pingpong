@@ -6,32 +6,33 @@ package pingpong
 import (
 	"context"
 
+	"github.com/g41797/grpc-pingpong/internal"
 	"github.com/g41797/grpc-pingpong/shared"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 )
 
-var _ shared.PingPong = (*Server)(nil)
+var _ shared.PingPong = (*server)(nil)
 
-type Server struct {
+type server struct {
 	level hclog.Level
 }
 
-func NewServer(trl hclog.Level) *Server {
-	return &Server{level: trl}
+func NewServer(trl hclog.Level) *server {
+	return &server{level: trl}
 }
 
-func (s *Server) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
+func (s *server) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
 	// TODO: Add real implementation
 	return b, nil
 }
 
-func (s *Server) Run() {
+func (s *server) Run() {
 
 	plugin.Serve(&plugin.ServeConfig{
-		HandshakeConfig: shared.Handshake,
+		HandshakeConfig: internal.Handshake,
 		Plugins: map[string]plugin.Plugin{
-			shared.PingPongPluginName: &shared.PingPongGRPCPlugin{Impl: s},
+			internal.PingPongPluginName: &internal.PingPongGRPCPlugin{Impl: s},
 		},
 
 		// A non-nil value here enables gRPC serving for this plugin...
