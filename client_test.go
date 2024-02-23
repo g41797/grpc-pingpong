@@ -1,19 +1,18 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package pingpong_test
+package pingopong_test
 
 import (
 	"context"
 	"testing"
 
-	"github.com/g41797/grpc-pingpong/pingpong"
-	"github.com/g41797/grpc-pingpong/shared"
+	"github.com/g41797/pingopong"
 	"github.com/hashicorp/go-hclog"
 )
 
 func TestPingPongClient_Play(t *testing.T) {
-	if pingpong.IsPluginProcess() {
+	if pingopong.IsPluginProcess() {
 		RunServer(t)
 		return
 	}
@@ -24,13 +23,13 @@ func TestPingPongClient_Play(t *testing.T) {
 }
 
 func RunServer(*testing.T) {
-	pingpong.NewServer(hclog.Debug)()
+	pingopong.NewServer(hclog.Debug)()
 	return
 }
 
 func RunClient(t *testing.T) {
 
-	pcl, clean := pingpong.NewGame(hclog.Debug)
+	pcl, clean := pingopong.NewGame(hclog.Debug)
 
 	if pcl == nil {
 		t.Fatal("cannot create new game")
@@ -39,7 +38,7 @@ func RunClient(t *testing.T) {
 
 	t.Cleanup(clean)
 
-	b := shared.Ball{Player: "noname"}
+	b := pingopong.Ball{Player: "noname"}
 
 	res, err := pcl.Play(context.Background(), &b)
 	if err != nil {

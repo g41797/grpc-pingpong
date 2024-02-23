@@ -1,4 +1,4 @@
-module github.com/g41797/grpc-pingpong
+module github.com/g41797/pingopong
 
 go 1.21
 

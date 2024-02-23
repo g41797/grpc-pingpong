@@ -1,24 +1,27 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package internal
+package pingopong
 
 import (
 	"context"
 
-	"github.com/g41797/grpc-pingpong/pingpong"
-	"github.com/g41797/grpc-pingpong/shared"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 )
 
-var _ shared.PingPong = (*gserver)(nil)
+func NewServer(trl hclog.Level) func() {
+	srv := gserver{level: trl}
+	return srv.Run
+}
+
+var _ PingPong = (*gserver)(nil)
 
 type gserver struct {
 	level hclog.Level
 }
 
-func (s *gserver) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
+func (s *gserver) Play(ctx context.Context, b *Ball) (*Ball, error) {
 	// TODO: Add real implementation
 	return b, nil
 }
@@ -26,9 +29,9 @@ func (s *gserver) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error
 func (s *gserver) Run() {
 
 	plugin.Serve(&plugin.ServeConfig{
-		HandshakeConfig: Handshake,
+		HandshakeConfig: handshake,
 		Plugins: map[string]plugin.Plugin{
-			PingPongPluginName: &PingPongGRPCPlugin{Impl: s},
+			pingPongPluginName: &pingPongGRPCPlugin{Impl: s},
 		},
 
 		// A non-nil value here enables gRPC serving for this plugin...
@@ -36,7 +39,7 @@ func (s *gserver) Run() {
 		Logger: hclog.New(&hclog.LoggerOptions{
 			Output: hclog.DefaultOutput,
 			Level:  s.level,
-			Name:   pingpong.RunningExeName() + "_plugin",
+			Name:   RunningExeName() + "_plugin",
 		}),
 	})
 

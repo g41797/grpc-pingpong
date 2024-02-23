@@ -5,16 +5,16 @@ syntax = "proto3";
 
 package pb;
 
-option go_package = "github.com/g41797/grpc-pingpong;pb";
+option go_package = "github.com/g41797/pingopong;pb";
 
 
 message Ball {
-    message Meta {
+    message Property {
         string Key = 1;
         string Value = 2;
     }
     string Player = 1;
-    repeated Meta Metas = 2;
+    repeated Property Properties = 2;
     bytes Raw = 3;
 }
 
