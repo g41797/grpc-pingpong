@@ -24,7 +24,7 @@ func TestPingPongClient_Play(t *testing.T) {
 }
 
 func RunServer(*testing.T) {
-	pingpong.NewServer(hclog.Debug).Run()
+	pingpong.NewServer(hclog.Debug)()
 	return
 }
 

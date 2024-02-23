@@ -1,7 +1,7 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package pingpong
+package internal
 
 import (
 	"context"
@@ -9,26 +9,10 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/g41797/grpc-pingpong/internal"
 	"github.com/g41797/grpc-pingpong/shared"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
-	"github.com/mitchellh/go-ps"
 )
-
-func ownExeName() string {
-	proc, _ := ps.FindProcess(os.Getpid())
-	return proc.Executable()
-}
-
-func parentExeName() string {
-	proc, _ := ps.FindProcess(os.Getppid())
-	return proc.Executable()
-}
-
-func IsPluginProcess() bool {
-	return ownExeName() == parentExeName()
-}
 
 var _ shared.PingPong = (*gclient)(nil)
 
@@ -36,11 +20,6 @@ type gclient struct {
 	level   hclog.Level
 	cleanup func()
 	impl    shared.PingPong
-}
-
-func NewGame(trl hclog.Level) (shared.PingPong, func()) {
-	result := &gclient{level: trl}
-	return result, result.Clean
 }
 
 func (s *gclient) Play(ctx context.Context, b *shared.Ball) (*shared.Ball, error) {
@@ -74,15 +53,15 @@ func (s *gclient) run() error {
 	}
 
 	client := plugin.NewClient(&plugin.ClientConfig{
-		HandshakeConfig: internal.Handshake,
-		Plugins:         internal.PluginMap,
+		HandshakeConfig: Handshake,
+		Plugins:         PluginMap,
 		Cmd:             exec.Command(os.Args[0], os.Args[1:]...),
 		AllowedProtocols: []plugin.Protocol{
 			plugin.ProtocolGRPC},
 		Logger: hclog.New(&hclog.LoggerOptions{
 			Output: hclog.DefaultOutput,
 			Level:  s.level,
-			Name:   ownExeName() + "_client",
+			Name:   grpcpingpong.RunningExeName() + "_client",
 		}),
 	})
 
@@ -95,7 +74,7 @@ func (s *gclient) run() error {
 	}
 
 	// Request the plugin
-	raw, err := rpcClient.Dispense(internal.PingPongPluginName)
+	raw, err := rpcClient.Dispense(PingPongPluginName)
 	if err != nil {
 		return err
 	}
