@@ -25,6 +25,8 @@ type gserver struct {
 
 func (s *gserver) Run() {
 
+	defer s.Clean()
+
 	plugin.Serve(&plugin.ServeConfig{
 		HandshakeConfig: handshake,
 		Plugins: map[string]plugin.Plugin{
@@ -63,4 +65,13 @@ func (s *gserver) Play(ctx context.Context, b *Ball) (*Ball, error) {
 
 	s.g = &g
 	return s.g.Play(ctx, b)
+}
+
+func (s *gserver) Clean() {
+	if s == nil {
+		return
+	}
+	if s.g != nil {
+		s.g.FinishOnce()
+	}
 }
