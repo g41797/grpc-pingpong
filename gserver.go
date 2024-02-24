@@ -5,6 +5,7 @@ package pingopong
 
 import (
 	"context"
+	"strings"
 
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
@@ -19,11 +20,7 @@ var _ PingPong = (*gserver)(nil)
 
 type gserver struct {
 	level hclog.Level
-}
-
-func (s *gserver) Play(ctx context.Context, b *Ball) (*Ball, error) {
-	// TODO: Add real implementation
-	return b, nil
+	g     *guard
 }
 
 func (s *gserver) Run() {
@@ -43,4 +40,27 @@ func (s *gserver) Run() {
 		}),
 	})
 
+}
+
+func (s *gserver) Play(ctx context.Context, b *Ball) (*Ball, error) {
+
+	if s.g == nil {
+		s.g = &guard{}
+	}
+
+	name := strings.ToLower(b.Player)
+	if s.g.name == name {
+		return s.g.Play(ctx, b)
+	}
+
+	s.g.FinishOnce()
+	s.g = nil
+
+	var g guard
+	if err := g.tryCreate(name); err != nil {
+		return nil, err
+	}
+
+	s.g = &g
+	return s.g.Play(ctx, b)
 }

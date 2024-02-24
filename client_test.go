@@ -8,6 +8,12 @@ import (
 	"testing"
 
 	"github.com/g41797/pingopong"
+
+	// Attach package with players to the process using
+	// so called "blank import" :
+	// for this kind of import only init() functions will be called
+	_ "github.com/g41797/pingopong/example"
+
 	"github.com/hashicorp/go-hclog"
 )
 
@@ -38,7 +44,7 @@ func RunClient(t *testing.T) {
 
 	t.Cleanup(clean)
 
-	b := pingopong.Ball{Player: "noname"}
+	b := pingopong.Ball{Player: "echo"}
 
 	res, err := pcl.Play(context.Background(), &b)
 	if err != nil {
