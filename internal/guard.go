@@ -1,7 +1,7 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package pingopong
+package internal
 
 import (
 	"context"
@@ -9,9 +9,11 @@ import (
 	"log"
 	"strings"
 	"sync"
+
+	"github.com/g41797/pingopong/pingpong"
 )
 
-var _ PingPongPlayer = &guard{}
+var _ pingpong.PingPongPlayer = &guard{}
 
 type guardState int
 
@@ -28,7 +30,7 @@ type guard struct {
 	lock  sync.Mutex
 	state guardState
 	name  string
-	pl    PingPongPlayer
+	pl    pingpong.PingPongPlayer
 }
 
 func (grd *guard) tryCreate(name string) error {
@@ -38,7 +40,7 @@ func (grd *guard) tryCreate(name string) error {
 		return fmt.Errorf("factory for %s does not exist", name)
 	}
 
-	if pl, err := fact.(PingPongPlayerFactory)(name); err == nil {
+	if pl, err := fact.(pingpong.PingPongPlayerFactory)(name); err == nil {
 		grd.pl = pl
 		grd.state = processfinishallowed
 		grd.name = name
@@ -52,7 +54,7 @@ func (grd *guard) InitOnce(config []byte) error {
 	return fmt.Errorf("init disabled")
 }
 
-func (grd *guard) Play(ctx context.Context, b *Ball) (*Ball, error) {
+func (grd *guard) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
 	if grd == nil {
 		return nil, fmt.Errorf("Process nil guard")
 	}
@@ -98,7 +100,7 @@ func (grd *guard) FinishOnce() error {
 	return err
 }
 
-func storeFactory(name string, fact PingPongPlayerFactory) {
+func StoreFactory(name string, fact pingpong.PingPongPlayerFactory) {
 	if len(name) == 0 {
 		log.Panic("empty player name")
 	}

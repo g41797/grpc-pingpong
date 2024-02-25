@@ -1,12 +1,13 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package pingopong
+package internal
 
 import (
 	"context"
 	"strings"
 
+	"github.com/g41797/pingopong/pingpong"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 )
@@ -16,7 +17,7 @@ func NewServer(trl hclog.Level) func() {
 	return srv.Run
 }
 
-var _ PingPong = (*gserver)(nil)
+var _ pingpong.PingPong = (*gserver)(nil)
 
 type gserver struct {
 	level hclog.Level
@@ -44,7 +45,7 @@ func (s *gserver) Run() {
 
 }
 
-func (s *gserver) Play(ctx context.Context, b *Ball) (*Ball, error) {
+func (s *gserver) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
 
 	if s.g == nil {
 		s.g = &guard{}

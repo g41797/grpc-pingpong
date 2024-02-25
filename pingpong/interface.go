@@ -1,7 +1,7 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package pingopong
+package pingpong
 
 import (
 	"context"
@@ -48,11 +48,5 @@ type PingPongPlayerFactory func(name string) (player PingPongPlayer, err error)
 // 2 - 	PingPongPlayerFactory should be registered before creation via init()
 //
 //	 func init() {
-//			pingopong.RegisterFactory("CopyFiles", cpfFactory)
+//			api.RegisterFactory("CopyFiles", cpfFactory)
 //		}
-
-// Store factory for further usage
-// name of player stored in lower case
-func RegisterFactory(name string, fact PingPongPlayerFactory) {
-	storeFactory(name, fact)
-}

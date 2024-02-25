@@ -1,24 +1,25 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package pingopong_test
+package internal_test
 
 import (
 	"context"
 	"testing"
 
-	"github.com/g41797/pingopong"
-
 	// Attach package with players to the process using
 	// so called "blank import" :
 	// for this kind of import only init() functions will be called
+	"github.com/g41797/pingopong/api"
 	_ "github.com/g41797/pingopong/example"
+	"github.com/g41797/pingopong/internal"
+	"github.com/g41797/pingopong/pingpong"
 
 	"github.com/hashicorp/go-hclog"
 )
 
 func TestPingPongClient_Play(t *testing.T) {
-	if pingopong.IsPluginProcess() {
+	if internal.IsPluginProcess() {
 		RunServer(t)
 		return
 	}
@@ -29,13 +30,13 @@ func TestPingPongClient_Play(t *testing.T) {
 }
 
 func RunServer(*testing.T) {
-	pingopong.NewServer(hclog.Debug)()
+	internal.NewServer(hclog.Debug)()
 	return
 }
 
 func RunClient(t *testing.T) {
 
-	pcl, clean := pingopong.NewGame(hclog.Debug)
+	pcl, clean := api.NewGame(hclog.Debug)
 
 	if pcl == nil {
 		t.Fatal("cannot create new game")
@@ -44,7 +45,7 @@ func RunClient(t *testing.T) {
 
 	t.Cleanup(clean)
 
-	b := pingopong.Ball{Player: "echo"}
+	b := pingpong.Ball{Player: "echo"}
 
 	res, err := pcl.Play(context.Background(), &b)
 	if err != nil {

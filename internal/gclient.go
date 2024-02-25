@@ -1,7 +1,7 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package pingopong
+package internal
 
 import (
 	"context"
@@ -9,24 +9,20 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/g41797/pingopong/pingpong"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 )
 
-func NewGame(trl hclog.Level) (PingPong, func()) {
-	result := &gclient{level: trl}
-	return result, result.Clean
-}
+var _ pingpong.PingPong = (*Gclient)(nil)
 
-var _ PingPong = (*gclient)(nil)
-
-type gclient struct {
-	level   hclog.Level
+type Gclient struct {
+	Level   hclog.Level
 	cleanup func()
-	impl    PingPong
+	impl    pingpong.PingPong
 }
 
-func (s *gclient) Play(ctx context.Context, b *Ball) (*Ball, error) {
+func (s *Gclient) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
 
 	if err := s.run(); err != nil {
 		return nil, err
@@ -35,7 +31,7 @@ func (s *gclient) Play(ctx context.Context, b *Ball) (*Ball, error) {
 	return s.impl.Play(ctx, b)
 }
 
-func (s *gclient) Clean() {
+func (s *Gclient) Clean() {
 	if s == nil {
 		return
 	}
@@ -47,7 +43,7 @@ func (s *gclient) Clean() {
 	s.impl = nil
 }
 
-func (s *gclient) run() error {
+func (s *Gclient) run() error {
 	if s == nil {
 		return fmt.Errorf("nil client")
 	}
@@ -64,7 +60,7 @@ func (s *gclient) run() error {
 			plugin.ProtocolGRPC},
 		Logger: hclog.New(&hclog.LoggerOptions{
 			Output: hclog.DefaultOutput,
-			Level:  s.level,
+			Level:  s.Level,
 			Name:   RunningExeName() + "_client",
 		}),
 	})
@@ -83,7 +79,7 @@ func (s *gclient) run() error {
 		return err
 	}
 
-	s.impl = raw.(PingPong)
+	s.impl = raw.(pingpong.PingPong)
 	s.cleanup = clean
 
 	return nil

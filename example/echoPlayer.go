@@ -6,14 +6,15 @@ package example
 import (
 	"context"
 
-	"github.com/g41797/pingopong"
+	"github.com/g41797/pingopong/api"
+	"github.com/g41797/pingopong/pingpong"
 )
 
 func init() {
-	pingopong.RegisterFactory("Echo", echoPlayerFactory)
+	api.RegisterFactory("Echo", echoPlayerFactory)
 }
 
-func echoPlayerFactory(_ string) (pingopong.PingPongPlayer, error) {
+func echoPlayerFactory(_ string) (pingpong.PingPongPlayer, error) {
 	pppl := new(echoPlayer)
 	if err := pppl.InitOnce(nil); err != nil {
 		return nil, err
@@ -21,7 +22,7 @@ func echoPlayerFactory(_ string) (pingopong.PingPongPlayer, error) {
 	return pppl, nil
 }
 
-var _ pingopong.PingPongPlayer = &echoPlayer{}
+var _ pingpong.PingPongPlayer = &echoPlayer{}
 
 type echoPlayer struct {
 }
@@ -34,6 +35,6 @@ func (p *echoPlayer) FinishOnce() error {
 	return nil
 }
 
-func (p *echoPlayer) Play(ctx context.Context, b *pingopong.Ball) (*pingopong.Ball, error) {
+func (p *echoPlayer) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
 	return b, nil
 }

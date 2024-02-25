@@ -1,13 +1,14 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package pingopong
+package internal
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/g41797/pingopong/internal/pb"
+	"github.com/g41797/pingopong/pingpong"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
 )
@@ -15,7 +16,7 @@ import (
 // gRPCClient is an implementation of PingPong that talks over GRPC.
 type gRPCClient struct{ client pb.PingPongClient }
 
-func (gc *gRPCClient) Play(ctx context.Context, in *Ball) (*Ball, error) {
+func (gc *gRPCClient) Play(ctx context.Context, in *pingpong.Ball) (*pingpong.Ball, error) {
 	pb, err := toProto(in)
 	if err != nil {
 		return nil, err
@@ -32,7 +33,7 @@ func (gc *gRPCClient) Play(ctx context.Context, in *Ball) (*Ball, error) {
 // Here is the gRPC server that gRPCClient talks to.
 type gRPCServer struct {
 	// This is the real implementation
-	Impl PingPong
+	Impl pingpong.PingPong
 }
 
 func (gs *gRPCServer) Play(ctx context.Context, pb *pb.Ball) (*pb.Ball, error) {
@@ -49,7 +50,7 @@ type pingPongGRPCPlugin struct {
 	// GRPCPlugin must still implement the Plugin interface
 	plugin.Plugin
 	// Concrete implementation, written in Go.
-	Impl PingPong
+	Impl pingpong.PingPong
 }
 
 func (p *pingPongGRPCPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) error {
@@ -76,7 +77,7 @@ var pluginMap = map[string]plugin.Plugin{
 	pingPongPluginName: &pingPongGRPCPlugin{},
 }
 
-func toProto(b *Ball) (out *pb.Ball, err error) {
+func toProto(b *pingpong.Ball) (out *pb.Ball, err error) {
 	if b == nil {
 		return nil, fmt.Errorf("nil ball")
 	}
@@ -101,19 +102,19 @@ func toProto(b *Ball) (out *pb.Ball, err error) {
 	return
 }
 
-func fromProto(b *pb.Ball) (out *Ball, err error) {
+func fromProto(b *pb.Ball) (out *pingpong.Ball, err error) {
 	if b == nil {
 		return nil, fmt.Errorf("nil ball")
 	}
 
-	out = new(Ball)
+	out = new(pingpong.Ball)
 	out.Player = b.GetPlayer()
 
 	lm := len(b.Properties)
 	if lm > 0 {
-		out.Properties = make([]Property, lm)
+		out.Properties = make([]pingpong.Property, lm)
 		for i, mt := range b.Properties {
-			out.Properties[i] = Property{Key: mt.Key, Value: mt.Value}
+			out.Properties[i] = pingpong.Property{Key: mt.Key, Value: mt.Value}
 		}
 	}
 
