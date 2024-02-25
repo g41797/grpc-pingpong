@@ -12,6 +12,11 @@ import (
 	"github.com/hashicorp/go-plugin"
 )
 
+func NewPingPing(trl hclog.Level) (pingpong.PingPong, func()) {
+	srv := gserver{level: trl}
+	return &srv, srv.Clean
+}
+
 func NewServer(trl hclog.Level) func() {
 	srv := gserver{level: trl}
 	return srv.Run

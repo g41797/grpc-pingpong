@@ -14,6 +14,11 @@ import (
 	"github.com/hashicorp/go-plugin"
 )
 
+func NewClient(trl hclog.Level) (pingpong.PingPong, func()) {
+	c := Gclient{Level: trl}
+	return &c, c.Clean
+}
+
 var _ pingpong.PingPong = (*Gclient)(nil)
 
 type Gclient struct {

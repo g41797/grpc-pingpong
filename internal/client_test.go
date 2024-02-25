@@ -5,13 +5,16 @@ package internal_test
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"testing"
 
 	// Attach package with players to the process using
 	// so called "blank import" :
 	// for this kind of import only init() functions will be called
-	"github.com/g41797/pingopong/api"
 	_ "github.com/g41797/pingopong/example"
+
+	"github.com/g41797/pingopong/api"
 	"github.com/g41797/pingopong/internal"
 	"github.com/g41797/pingopong/pingpong"
 
@@ -19,11 +22,22 @@ import (
 )
 
 func TestPingPongClient_Play(t *testing.T) {
+
+	api.ResetDirectCall()
+
 	if internal.IsPluginProcess() {
 		RunServer(t)
 		return
 	}
 
+	RunClient(t)
+
+	return
+}
+
+func TestPingPongDirectCall_Play(t *testing.T) {
+	api.SetDirectCall()
+	defer api.ResetDirectCall()
 	RunClient(t)
 
 	return
@@ -55,6 +69,28 @@ func RunClient(t *testing.T) {
 
 	if res.Player != b.Player {
 		t.Errorf("expected %s actual %s", b.Player, res.Player)
+		return
+	}
+
+	if len(res.Properties) <= 2 {
+		return
+	}
+
+	propPID := res.Properties[0]
+	propPPID := res.Properties[1]
+
+	spid := fmt.Sprint(os.Getpid())
+	sppid := fmt.Sprint(os.Getppid())
+
+	if api.IsDirectCall() {
+		if propPID.Value != spid {
+			t.Errorf("direct call within the same process: expected %s actual %s", spid, propPID.Value)
+			return
+		}
+	}
+
+	if propPPID.Value != sppid {
+		t.Errorf("in-direct call within child process expected %s actual %s", spid, propPPID.Value)
 		return
 	}
 
