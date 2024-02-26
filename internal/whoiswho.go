@@ -9,11 +9,6 @@ import (
 	"github.com/mitchellh/go-ps"
 )
 
-// Returns true if called within plugin process
-func IsPluginProcess() bool {
-	return RunningExeName() == parentExeName()
-}
-
 // Executable name running this process. This is not a path to the
 // executable.
 func RunningExeName() string {
@@ -21,7 +16,7 @@ func RunningExeName() string {
 	return proc.Executable()
 }
 
-func parentExeName() string {
+func ParentExeName() string {
 	proc, _ := ps.FindProcess(os.Getppid())
 	return proc.Executable()
 }

@@ -6,9 +6,7 @@ package internal
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
-	"sync"
 
 	"github.com/g41797/pingopong/pingpong"
 )
@@ -34,7 +32,7 @@ type guard struct {
 
 func (grd *guard) tryCreate(name string) error {
 
-	fact, exists := factories.Load(strings.ToLower(name))
+	fact, exists := Factories.Load(strings.ToLower(name))
 	if !exists {
 		return fmt.Errorf("factory for %s does not exist", name)
 	}
@@ -92,19 +90,3 @@ func (grd *guard) FinishOnce() error {
 
 	return err
 }
-
-func StoreFactory(name string, fact pingpong.PingPongPlayerFactory) {
-	if len(name) == 0 {
-		log.Panic("empty player name")
-	}
-	if fact == nil {
-		log.Panicf("nil player factory for %s", name)
-	}
-
-	if _, exists := factories.LoadOrStore(strings.ToLower(name), fact); exists {
-		log.Panicf("player factory for %s already exists", name)
-	}
-	return
-}
-
-var factories sync.Map

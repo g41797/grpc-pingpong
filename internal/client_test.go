@@ -25,7 +25,7 @@ func TestPingPongClient_Play(t *testing.T) {
 
 	api.ResetDirectCall()
 
-	if internal.IsPluginProcess() {
+	if api.IsPluginProcess() {
 		RunServer(t)
 		return
 	}
