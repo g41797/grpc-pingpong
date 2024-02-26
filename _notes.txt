@@ -8,6 +8,8 @@ https://zerofruit-web3.medium.com/hashicorp-plugin-system-design-and-implementat
 RPC-based plugins in Go
 https://eli.thegreenplace.net/2023/rpc-based-plugins-in-go/
 
+Use the same process for both client and plugin code
+https://discuss.hashicorp.com/t/use-the-same-executable-as-host-process-with-clients-and-subprocess-with-plugins/62528
 
 Stream proto
 https://github.com/hashicorp/nomad/blob/main/drivers/shared/executor/proto/executor.proto

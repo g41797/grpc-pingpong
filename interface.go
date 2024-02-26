@@ -40,7 +40,7 @@ type PingPongPlayer interface {
 // Creates PingPongPlayer implementation
 // Calls InitOnce
 // err is InitOnce error
-// name converted to lower case befor call
+// name converted to lower case before call
 type PingPongPlayerFactory func(name string) (player PingPongPlayer, err error)
 
 // In order to allow creation of PingPongPlayer implementation:

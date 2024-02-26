@@ -11,10 +11,13 @@ type Property struct {
 
 // Main unit of information
 type Ball struct {
-	// Name of the player (handler) - must
+	// Unique name of the player (handler) - must
+	// Analog of URI/URL
 	Player string `json:"Player"`
+
 	// Optional headers/meta data
 	Properties []Property `json:"Properties,omitempty"`
+
 	// Optional content, usually JSON byte array
 	Raw []byte `json:"Raw,omitempty"`
 }

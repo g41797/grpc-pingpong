@@ -12,8 +12,9 @@ import (
 )
 
 // Prepares new game with log level 'trl'
-// Returns PingPong interface for the play and cleanup function
-// for calling after finish of the game.
+// Returns:
+// - PingPong interface for the play
+// - Cleanup function - should be called after finish of the game.
 func NewGame(trl hclog.Level) (pingopong.PingPong, func()) {
 
 	if IsDirectCall() {
