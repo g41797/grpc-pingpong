@@ -8,10 +8,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/g41797/pingopong/pingpong"
+	"github.com/g41797/pingopong"
 )
 
-func StoreFactory(name string, fact pingpong.PingPongPlayerFactory) {
+func StoreFactory(name string, fact pingopong.PingPongPlayerFactory) {
 	if len(name) == 0 {
 		log.Panic("empty player name")
 	}

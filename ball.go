@@ -1,7 +1,7 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-package pingpong
+package pingopong
 
 // Analog of http header or meta data
 type Property struct {

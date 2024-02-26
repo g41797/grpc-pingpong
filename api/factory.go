@@ -4,12 +4,12 @@
 package api
 
 import (
+	"github.com/g41797/pingopong"
 	"github.com/g41797/pingopong/internal"
-	"github.com/g41797/pingopong/pingpong"
 )
 
 // Store factory for further usage
 // name of player stored in lower case
-func RegisterFactory(name string, fact pingpong.PingPongPlayerFactory) {
+func RegisterFactory(name string, fact pingopong.PingPongPlayerFactory) {
 	internal.StoreFactory(name, fact)
 }

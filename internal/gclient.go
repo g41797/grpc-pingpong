@@ -10,26 +10,26 @@ import (
 	"os/exec"
 	"sync"
 
-	"github.com/g41797/pingopong/pingpong"
+	"github.com/g41797/pingopong"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 )
 
-func NewClient(trl hclog.Level) (pingpong.PingPong, func()) {
+func NewClient(trl hclog.Level) (pingopong.PingPong, func()) {
 	c := Gclient{Level: trl}
 	return &c, c.Clean
 }
 
-var _ pingpong.PingPong = (*Gclient)(nil)
+var _ pingopong.PingPong = (*Gclient)(nil)
 
 type Gclient struct {
 	lock    sync.Mutex
 	Level   hclog.Level
 	cleanup func()
-	impl    pingpong.PingPong
+	impl    pingopong.PingPong
 }
 
-func (s *Gclient) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
+func (s *Gclient) Play(ctx context.Context, b *pingopong.Ball) (*pingopong.Ball, error) {
 
 	s.lock.Lock()
 	defer s.lock.Unlock()
@@ -89,7 +89,7 @@ func (s *Gclient) run() error {
 		return err
 	}
 
-	s.impl = raw.(pingpong.PingPong)
+	s.impl = raw.(pingopong.PingPong)
 	s.cleanup = clean
 
 	return nil

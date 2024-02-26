@@ -6,15 +6,15 @@ package api
 import (
 	"os"
 
+	"github.com/g41797/pingopong"
 	"github.com/g41797/pingopong/internal"
-	"github.com/g41797/pingopong/pingpong"
 	"github.com/hashicorp/go-hclog"
 )
 
 // Prepares new game with log level 'trl'
 // Returns PingPong interface for the play and cleanup function
 // for calling after finish of the game.
-func NewGame(trl hclog.Level) (pingpong.PingPong, func()) {
+func NewGame(trl hclog.Level) (pingopong.PingPong, func()) {
 
 	if IsDirectCall() {
 		return internal.NewPingPing(trl)

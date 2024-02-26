@@ -8,12 +8,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/g41797/pingopong/pingpong"
+	"github.com/g41797/pingopong"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 )
 
-func NewPingPing(trl hclog.Level) (pingpong.PingPong, func()) {
+func NewPingPing(trl hclog.Level) (pingopong.PingPong, func()) {
 	srv := gserver{level: trl}
 	return &srv, srv.Clean
 }
@@ -23,7 +23,7 @@ func NewServer(trl hclog.Level) func() {
 	return srv.Run
 }
 
-var _ pingpong.PingPong = (*gserver)(nil)
+var _ pingopong.PingPong = (*gserver)(nil)
 
 type gserver struct {
 	lock  sync.Mutex
@@ -52,7 +52,7 @@ func (s *gserver) Run() {
 
 }
 
-func (s *gserver) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
+func (s *gserver) Play(ctx context.Context, b *pingopong.Ball) (*pingopong.Ball, error) {
 
 	s.lock.Lock()
 	defer s.lock.Unlock()

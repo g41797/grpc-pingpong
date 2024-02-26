@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/g41797/pingopong/pingpong"
+	"github.com/g41797/pingopong"
 )
 
-var _ pingpong.PingPongPlayer = &guard{}
+var _ pingopong.PingPongPlayer = &guard{}
 
 type guardState int
 
@@ -27,7 +27,7 @@ func (gst guardState) String() string {
 type guard struct {
 	state guardState
 	name  string
-	pl    pingpong.PingPongPlayer
+	pl    pingopong.PingPongPlayer
 }
 
 func (grd *guard) tryCreate(name string) error {
@@ -37,7 +37,7 @@ func (grd *guard) tryCreate(name string) error {
 		return fmt.Errorf("factory for %s does not exist", name)
 	}
 
-	if pl, err := fact.(pingpong.PingPongPlayerFactory)(name); err == nil {
+	if pl, err := fact.(pingopong.PingPongPlayerFactory)(name); err == nil {
 		grd.pl = pl
 		grd.state = processfinishallowed
 		grd.name = name
@@ -51,7 +51,7 @@ func (grd *guard) InitOnce(config []byte) error {
 	return fmt.Errorf("init disabled")
 }
 
-func (grd *guard) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
+func (grd *guard) Play(ctx context.Context, b *pingopong.Ball) (*pingopong.Ball, error) {
 	if grd == nil {
 		return nil, fmt.Errorf("Process nil guard")
 	}

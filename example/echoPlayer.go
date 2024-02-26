@@ -8,15 +8,15 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/g41797/pingopong"
 	"github.com/g41797/pingopong/api"
-	"github.com/g41797/pingopong/pingpong"
 )
 
 func init() {
 	api.RegisterFactory("Echo", echoPlayerFactory)
 }
 
-func echoPlayerFactory(_ string) (pingpong.PingPongPlayer, error) {
+func echoPlayerFactory(_ string) (pingopong.PingPongPlayer, error) {
 	pppl := new(echoPlayer)
 	if err := pppl.InitOnce(nil); err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func echoPlayerFactory(_ string) (pingpong.PingPongPlayer, error) {
 	return pppl, nil
 }
 
-var _ pingpong.PingPongPlayer = &echoPlayer{}
+var _ pingopong.PingPongPlayer = &echoPlayer{}
 
 type echoPlayer struct {
 }
@@ -37,9 +37,9 @@ func (p *echoPlayer) FinishOnce() error {
 	return nil
 }
 
-func (p *echoPlayer) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
+func (p *echoPlayer) Play(ctx context.Context, b *pingopong.Ball) (*pingopong.Ball, error) {
 	if len(b.Properties) == 0 {
-		b.Properties = make([]pingpong.Property, 2)
+		b.Properties = make([]pingopong.Property, 2)
 
 		// For DirectCall - Value contains the pid of client process
 		b.Properties[0].Key = "PID"
