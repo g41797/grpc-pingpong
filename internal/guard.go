@@ -27,7 +27,6 @@ func (gst guardState) String() string {
 }
 
 type guard struct {
-	lock  sync.Mutex
 	state guardState
 	name  string
 	pl    pingpong.PingPongPlayer
@@ -59,9 +58,6 @@ func (grd *guard) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, e
 		return nil, fmt.Errorf("Process nil guard")
 	}
 
-	grd.lock.Lock()
-	defer grd.lock.Unlock()
-
 	if grd.pl == nil {
 		return nil, fmt.Errorf("player was not created")
 	}
@@ -81,9 +77,6 @@ func (grd *guard) FinishOnce() error {
 	if grd == nil {
 		return nil
 	}
-
-	grd.lock.Lock()
-	defer grd.lock.Unlock()
 
 	if grd.pl == nil {
 		return nil

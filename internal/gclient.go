@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"sync"
 
 	"github.com/g41797/pingopong/pingpong"
 	"github.com/hashicorp/go-hclog"
@@ -22,12 +23,16 @@ func NewClient(trl hclog.Level) (pingpong.PingPong, func()) {
 var _ pingpong.PingPong = (*Gclient)(nil)
 
 type Gclient struct {
+	lock    sync.Mutex
 	Level   hclog.Level
 	cleanup func()
 	impl    pingpong.PingPong
 }
 
 func (s *Gclient) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
+
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
 	if err := s.run(); err != nil {
 		return nil, err

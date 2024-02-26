@@ -6,6 +6,7 @@ package internal
 import (
 	"context"
 	"strings"
+	"sync"
 
 	"github.com/g41797/pingopong/pingpong"
 	"github.com/hashicorp/go-hclog"
@@ -25,6 +26,7 @@ func NewServer(trl hclog.Level) func() {
 var _ pingpong.PingPong = (*gserver)(nil)
 
 type gserver struct {
+	lock  sync.Mutex
 	level hclog.Level
 	g     *guard
 }
@@ -51,6 +53,9 @@ func (s *gserver) Run() {
 }
 
 func (s *gserver) Play(ctx context.Context, b *pingpong.Ball) (*pingpong.Ball, error) {
+
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
 	if s.g == nil {
 		s.g = &guard{}
